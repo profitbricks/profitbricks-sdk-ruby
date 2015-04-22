@@ -8,10 +8,10 @@ Gem::Specification.new do |spec|
   spec.version       = ProfitBricks::VERSION
   spec.authors       = ["Ethan Devenport"]
   spec.email         = ["ethand@stackpointcloud.com"]
-  spec.summary       = %q{Official Ruby ProfitBricks SDK}
-  spec.description   = %q{Official Ruby ProfitBricks SDK}
-  spec.homepage      = ""
-  spec.license       = "MIT"
+  spec.summary       = %q{Official ProfitBricks SDK for Ruby}
+  spec.description   = %q{The ProfitBricks SDK for Ruby provides integration with the ProfitBricks cloud environment over the available REST API.}
+  spec.homepage      = "https://github.com/profitbricks/profitbricks-sdk-ruby"
+  spec.license       = "Apache"
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
