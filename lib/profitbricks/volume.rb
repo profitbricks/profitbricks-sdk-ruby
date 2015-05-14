@@ -152,7 +152,6 @@ module ProfitBricks
       #   - +discScsiHotUnPlug+<Boolean>
       #
       def create(datacenter_id, options = {})
-        options[:licenceType] ||= 'UNKNOWN'
         response = ProfitBricks.request(
           method: :post,
           path: "/datacenters/#{datacenter_id}/volumes",
