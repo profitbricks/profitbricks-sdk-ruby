@@ -1,7 +1,6 @@
 module ProfitBricks
   # Server class
   class Server < ProfitBricks::Model
-
     # Delete the server.
     def delete
       ProfitBricks.request(
@@ -118,12 +117,25 @@ module ProfitBricks
 
     class << self
       # Create a new server.
+
       def create(datacenter_id, options = {})
+        entities = {}
+
+        # Retrieve volumes collection if present and generate appropriate JSON.
+        if options.key?(:volumes)
+          entities[:volumes] = collect_entities(options.delete(:volumes))
+        end
+
+        # Retrieve nics collection if present and generate appropriate JSON.
+        if options.key?(:nics)
+          entities[:nics] = collect_entities(options.delete(:nics))
+        end
+
         response = ProfitBricks.request(
           method: :post,
           path: "/datacenters/#{datacenter_id}/servers",
           expects: 202,
-          body: { properties: options }.to_json
+          body: { properties: options, entities: entities }.to_json
         )
         add_parent_identities(response)
         instantiate_objects(response)
@@ -152,6 +164,24 @@ module ProfitBricks
     end
 
     private
+
+    def self.collect_entities(entities)
+      if entities.is_a?(Array) && entities.length > 0
+        items = []
+        entities.each do |entity|
+          if entity.key?(:firewallrules)
+            subentities = collect_entities(entity.delete(:firewallrules))
+            items << {
+              properties: entity,
+              entities: { firewallrules: subentities }
+            }
+          else
+            items << { properties: entity }
+          end
+        end
+        { items: items }
+      end
+    end
 
     def server_control(operation)
       ProfitBricks.request(
