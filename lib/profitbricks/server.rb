@@ -186,7 +186,7 @@ module ProfitBricks
     def server_control(operation)
       ProfitBricks.request(
         method: :post,
-        path: "/datacenters/#{self.datacenterId}/servers/#{self.id}/#{operation}",
+        path: "/datacenters/#{self.datacenterId}/servers/#{id}/#{operation}",
         headers: { 'Content-Type' => 'application/x-www-form-urlencoded' },
         expects: 202
       )
