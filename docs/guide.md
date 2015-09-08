@@ -120,6 +120,19 @@ The following example shows you how to create a new server in the virtual data c
 
 One of the unique features of the ProfitBricks platform when compared with the other providers is that it allows you to define your own settings for cores, memory, and disk size without being tied to a particular size.
 
+## How To: Create a Composite Server
+
+A composite server is a server instance that has volumes and NICs already attached. The following example will demonstrate how a composite server can be built with a single request, but the volume, NICs, and included firewall rule will be defined separately for readability.
+
+    volumes = [ { name: 'OS', size: 10, image: '4dc4585c-505a-11e5-bfc6-52540066fee9', bus: 'VIRTIO', imagePassword: 'secretpassword' } ]
+    fwrules = [ { name: 'SSH', protocol: 'TCP', portRangeStart: 22, portRangeEnd: 22 } ]
+    nics = [ { name: 'public', lan: 1, firewallrules: fwrules }, { name: 'private', lan: 2 } ]
+
+The composite server can now be created.
+
+    server = datacenter.create_server(name: 'Composite Server', cores: 1, ram: 1024, volumes: volumes, nics: nics)
+    server.wait_for { ready? }
+
 ## How To: List Available Disk and ISO Images
 
 A list of disk and ISO images are available from ProfitBricks for immediate use. These can be easily viewed and selected with the following code.

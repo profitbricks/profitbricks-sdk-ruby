@@ -22,7 +22,7 @@ describe ProfitBricks::Firewall do
   it '#create' do
     expect(@fwrule.type).to eq('firewall-rule')
     expect(@fwrule.id).to be_kind_of(String)
-    expect(@fwrule.properties['name']).to eq('Open SSH port')
+    expect(@fwrule.properties['name']).to eq('SSH')
     expect(@fwrule.properties['protocol']).to eq('TCP')
     expect(@fwrule.properties['sourceMac']).to eq('01:23:45:67:89:00')
     expect(@fwrule.properties['sourceIp']).to be nil
@@ -39,7 +39,7 @@ describe ProfitBricks::Firewall do
     expect(fwrules.count).to be > 0
     expect(fwrules[0].type).to eq('firewall-rule')
     expect(fwrules[0].id).to eq(@fwrule.id)
-    expect(fwrules[0].properties['name']).to eq('Open SSH port')
+    expect(fwrules[0].properties['name']).to eq('SSH')
     expect(fwrules[0].properties['protocol']).to eq('TCP')
     expect(fwrules[0].properties['sourceMac']).to eq('01:23:45:67:89:00')
     expect(fwrules[0].properties['sourceIp']).to be nil
@@ -55,7 +55,7 @@ describe ProfitBricks::Firewall do
 
     expect(fwrule.type).to eq('firewall-rule')
     expect(fwrule.id).to eq(@fwrule.id)
-    expect(fwrule.properties['name']).to eq('Open SSH port')
+    expect(fwrule.properties['name']).to eq('SSH')
     expect(fwrule.properties['protocol']).to eq('TCP')
     expect(fwrule.properties['sourceMac']).to eq('01:23:45:67:89:00')
     expect(fwrule.properties['sourceIp']).to be nil
@@ -75,7 +75,7 @@ describe ProfitBricks::Firewall do
 
     expect(fwrule.type).to eq('firewall-rule')
     expect(fwrule.id).to eq(@fwrule.id)
-    expect(fwrule.properties['name']).to eq('Open SSH port')
+    expect(fwrule.properties['name']).to eq('SSH')
     expect(fwrule.properties['protocol']).to eq('TCP')
     expect(fwrule.properties['sourceMac']).to eq('01:98:22:22:44:22')
     expect(fwrule.properties['sourceIp']).to be nil
