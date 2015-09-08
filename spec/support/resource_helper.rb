@@ -2,8 +2,8 @@ module Helpers
   def options
     {
       datacenter: {
-        name: 'My New Datacenter',
-        description: 'Production environment',
+        name: 'Ruby SDK Datacenter',
+        description: 'SDK test environment',
         location: 'de/fkb'
       },
 
@@ -26,14 +26,13 @@ module Helpers
 
       nic: {
         name: 'nic1',
-        # ips: [ '10.1.1.1' ],
         dhcp: 'true',
         lan: 1,
         firewallActive: true
       },
 
       fwrule: {
-        name: 'Open SSH port',
+        name: 'SSH',
         protocol: 'TCP',
         sourceMac: '01:23:45:67:89:00',
         sourceIp: nil,
@@ -58,6 +57,34 @@ module Helpers
       ipblock: {
         location: "de/fra",
         size: 1
+      },
+
+      composite_server: {
+        name: 'New Composite Server',
+        ram: 1024,
+        cores: 1,
+        volumes: [
+          {
+            name: 'composite-boot',
+            size: 10,
+            licenceType: 'UNKNOWN'
+          }
+        ],
+        nics: [
+          {
+            name: 'nic1',
+            dhcp: 'true',
+            lan: 1,
+            firewallrules: [
+              {
+                name: 'SSH',
+                protocol: 'TCP',
+                portRangeStart: 22,
+                portRangeEnd: 22,
+              }
+            ]
+          }
+        ]
       }
     }
   end

@@ -86,7 +86,7 @@ module ProfitBricks
         headers: { 'Content-Type' => 'application/x-www-form-urlencoded' },
         expects: 202,
         body: URI.encode_www_form(options)
-      ) 
+      )
       ProfitBricks::Snapshot.new(response)
     end
 
@@ -105,7 +105,7 @@ module ProfitBricks
         headers: { 'Content-Type' => 'application/x-www-form-urlencoded' },
         expects: 202,
         body: URI.encode_www_form(snapshotId: snapshot_id)
-      ) 
+      )
     end
 
     class << self

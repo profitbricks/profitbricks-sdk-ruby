@@ -10,9 +10,9 @@ end
 
 ProfitBricks.configure do |config|
   config.url = 'https://api.profitbricks.com/rest/'
-  config.username = ''
-  config.password = ''
+  config.username = ENV['PROFITBRICKS_USERNAME']
+  config.password = ENV['PROFITBRICKS_PASSWORD']
   config.debug = false
-  config.timeout = 60
+  config.timeout = 300
   config.interval = 5
 end

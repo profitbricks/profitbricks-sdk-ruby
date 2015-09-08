@@ -27,8 +27,8 @@ describe ProfitBricks::Datacenter do
     expect(@datacenter.id).to match(
       /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i
     )
-    expect(@datacenter.properties['name']).to eq('My New Datacenter')
-    expect(@datacenter.properties['description']).to eq('Production environment')
+    expect(@datacenter.properties['name']).to eq('Ruby SDK Datacenter')
+    expect(@datacenter.properties['description']).to eq('SDK test environment')
     expect(@datacenter.properties['location']).to eq('de/fkb')
   end
 
@@ -47,19 +47,19 @@ describe ProfitBricks::Datacenter do
 
     expect(datacenter.type).to eq('datacenter')
     expect(datacenter.id).to eq(@datacenter.id)
-    expect(datacenter.properties['name']).to eq('My New Datacenter')
-    expect(datacenter.properties['description']).to eq('Production environment')
+    expect(datacenter.properties['name']).to eq('Ruby SDK Datacenter')
+    expect(datacenter.properties['description']).to eq('SDK test environment')
     expect(datacenter.properties['location']).to eq('de/fkb')
     expect(datacenter.properties['version']).to be_kind_of(Integer)
   end
 
   it '#update' do
     datacenter = ProfitBricks::Datacenter.get(@datacenter.id)
-    datacenter.update(name: 'datacenter1', description: 'Production environment')
+    datacenter.update(name: 'datacenter1', description: 'Ruby SDK test environment')
 
     expect(datacenter.id).to eq(@datacenter.id)
     expect(datacenter.properties['name']).to eq('datacenter1')
-    expect(datacenter.properties['description']).to eq('Production environment')
+    expect(datacenter.properties['description']).to eq('Ruby SDK test environment')
     expect(datacenter.properties['location']).to eq('de/fkb')
     expect(datacenter.properties['version']).to be_kind_of(Integer)
   end
@@ -206,7 +206,7 @@ describe ProfitBricks::Datacenter do
 
     expect(lans[0].type).to eq('lan')
     expect(lans[0].id).to match(/^\d+$/)
-    expect(lans[0].properties['name']).to eq('Switch for LAN 0')
+    expect(lans[0].properties['name']).to eq('public Lan 4')
     expect(lans[0].properties['public']).to be false
   end
 
