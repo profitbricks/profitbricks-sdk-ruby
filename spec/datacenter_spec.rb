@@ -206,7 +206,7 @@ describe ProfitBricks::Datacenter do
 
     expect(lans[0].type).to eq('lan')
     expect(lans[0].id).to match(/^\d+$/)
-    expect(lans[0].properties['name']).to eq('Switch for LAN 0')
+    expect(lans[0].properties['name']).to eq('public Lan 4')
     expect(lans[0].properties['public']).to be false
   end
 
