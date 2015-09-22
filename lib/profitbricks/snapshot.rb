@@ -4,11 +4,13 @@ module ProfitBricks
 
     # Delete the snapshot.
     def delete
-      ProfitBricks.request(
+      response = ProfitBricks.request(
         method: :delete,
         path: "/snapshots/#{self.id}",
         expects: 202
       )
+      self.requestId = response[:requestId]
+      self
     end
 
     # Update the snapshot.

@@ -4,11 +4,13 @@ module ProfitBricks
 
     # Delete the firewall rule.
     def delete
-      ProfitBricks.request(
+      response = ProfitBricks.request(
         method: :delete,
         path: "/datacenters/#{self.datacenterId}/servers/#{self.serverId}/nics/#{self.nicId}/firewallrules/#{self.id}",
         expects: 202
       )
+      self.requestId = response[:requestId]
+      self
     end
 
     # Update the firewall rule.
