@@ -24,9 +24,7 @@ describe ProfitBricks::Datacenter do
 
   it '#create' do
     expect(@datacenter.type).to eq('datacenter')
-    expect(@datacenter.id).to match(
-      /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i
-    )
+    expect(@datacenter.id).to match(options[:uuid])
     expect(@datacenter.properties['name']).to eq('Ruby SDK Datacenter')
     expect(@datacenter.properties['description']).to eq('SDK test environment')
     expect(@datacenter.properties['location']).to eq('de/fkb')
@@ -37,9 +35,7 @@ describe ProfitBricks::Datacenter do
 
     expect(datacenters.count).to be > 0
     expect(datacenters[0].type).to eq('datacenter')
-    expect(datacenters[0].id).to match(
-      /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i
-    )
+    expect(datacenters[0].id).to match(options[:uuid])
   end
 
   it '#get' do
@@ -68,7 +64,7 @@ describe ProfitBricks::Datacenter do
     datacenter = ProfitBricks::Datacenter.create(options[:datacenter])
     datacenter.wait_for { ready? }
 
-    expect(datacenter.delete).to be_kind_of(Hash)
+    expect(datacenter.delete.requestId).to match(options[:uuid])
     expect(datacenter.wait_for { ready? }).to be_kind_of(Hash)
   end
 
@@ -76,9 +72,7 @@ describe ProfitBricks::Datacenter do
     servers = @datacenter.list_servers
 
     expect(servers[0].type).to eq('server')
-    expect(servers[0].id).to match(
-      /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i
-    )
+    expect(servers[0].id).to match(options[:uuid])
     expect(servers[0].properties['name']).to eq('New Server')
     expect(servers[0].properties['cores']).to be_kind_of(Integer)
     expect(servers[0].properties['ram']).to eq(1024)
@@ -92,9 +86,7 @@ describe ProfitBricks::Datacenter do
     server = @datacenter.get_server(@server.id)
 
     expect(server.type).to eq('server')
-    expect(server.id).to match(
-      /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i
-    )
+    expect(server.id).to match(options[:uuid])
     expect(server.properties['name']).to eq('New Server')
     expect(server.properties['cores']).to be_kind_of(Integer)
     expect(server.properties['ram']).to eq(1024)
@@ -122,9 +114,7 @@ describe ProfitBricks::Datacenter do
     volumes = @datacenter.list_volumes
 
     expect(volumes[0].type).to eq('volume')
-    expect(volumes[0].id).to match(
-      /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i
-    )
+    expect(volumes[0].id).to match(options[:uuid])
     expect(volumes[0].properties['name']).to eq('my boot volume for server 1')
     expect(volumes[0].properties['size']).to eq(10)
     expect(volumes[0].properties['bus']).to be nil
@@ -139,9 +129,7 @@ describe ProfitBricks::Datacenter do
     volume = @datacenter.get_volume(@volume.id)
 
     expect(volume.type).to eq('volume')
-    expect(volume.id).to match(
-      /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i
-    )
+    expect(volume.id).to match(options[:uuid])
     expect(volume.properties['name']).to eq('my boot volume for server 1')
     expect(volume.properties['size']).to eq(10)
     expect(volume.properties['bus']).to be nil
@@ -157,9 +145,7 @@ describe ProfitBricks::Datacenter do
     volume = @datacenter.get_volume(@volume.id)
 
     expect(volume.type).to eq('volume')
-    expect(volume.id).to match(
-      /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i
-    )
+    expect(volume.id).to match(options[:uuid])
     expect(volume.properties['name']).to eq('my boot volume for server 1')
     expect(volume.properties['size']).to eq(10)
     expect(volume.properties['bus']).to be nil
@@ -207,7 +193,7 @@ describe ProfitBricks::Datacenter do
     expect(lans[0].type).to eq('lan')
     expect(lans[0].id).to match(/^\d+$/)
     expect(lans[0].properties['name']).to eq('public Lan 4')
-    expect(lans[0].properties['public']).to be false
+    expect(lans[0].properties['public']).to be true
   end
 
   it '#get_lan' do

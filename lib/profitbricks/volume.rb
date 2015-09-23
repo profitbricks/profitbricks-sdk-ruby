@@ -4,11 +4,13 @@ module ProfitBricks
 
     # Delete the volume.
     def delete
-      ProfitBricks.request(
+      response = ProfitBricks.request(
         method: :delete,
         path: "/datacenters/#{self.datacenterId}/volumes/#{self.id}",
         expects: 202
       )
+      self.requestId = response[:requestId]
+      self
     end
 
     # Update the volume.

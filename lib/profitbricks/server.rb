@@ -3,11 +3,13 @@ module ProfitBricks
   class Server < ProfitBricks::Model
     # Delete the server.
     def delete
-      ProfitBricks.request(
+      response = ProfitBricks.request(
         method: :delete,
         path: "/datacenters/#{datacenterId}/servers/#{id}",
         expects: 202
       )
+      self.requestId = response[:requestId]
+      self
     end
 
     # Update the server.

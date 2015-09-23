@@ -27,7 +27,7 @@ describe ProfitBricks::Loadbalancer do
 
   it '#create' do
     expect(@loadbalancer.type).to eq('loadbalancer')
-    expect(@loadbalancer.id).to be_kind_of(String)
+    expect(@loadbalancer.id).to match(options[:uuid])
     expect(@loadbalancer.properties['name']).to eq('My LB')
     expect(@loadbalancer.properties['ip']).to be nil
     expect(@loadbalancer.properties['dhcp']).to be true
@@ -75,7 +75,7 @@ describe ProfitBricks::Loadbalancer do
     loadbalancer = ProfitBricks::Loadbalancer.create(@datacenter.id, options[:loadbalancer])
     loadbalancer.wait_for { ready? }
 
-    expect(loadbalancer.delete).to have_key(:requestId)
+    expect(loadbalancer.delete.requestId).to match(options[:uuid])
   end
 
   it '#list_balanced_nics' do

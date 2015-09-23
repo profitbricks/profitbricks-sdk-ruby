@@ -8,7 +8,7 @@ describe ProfitBricks::Image do
   it '#list' do
     expect(@images.count).to be > 0
     expect(@images[0].type).to eq('image')
-    expect(@images[0].id).to be_kind_of(String)
+    expect(@images[0].id).to match(options[:uuid])
     expect(@images[0].properties['name']).to be_kind_of(String)
     expect(@images[0].properties['description']).to be nil
     expect(@images[0].properties['location']).to match(/\w+\/\w+/)
@@ -19,7 +19,7 @@ describe ProfitBricks::Image do
     image = ProfitBricks::Image.get(@images[0].id)
 
     expect(image.type).to eq('image')
-    expect(image.id).to be_kind_of(String)
+    expect(image.id).to match(options[:uuid])
     expect(image.properties['name']).to be_kind_of(String)
     expect(image.properties['description']).to be nil
     expect(image.properties['location']).to match(/\w+\/\w+/)

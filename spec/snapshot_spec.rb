@@ -18,7 +18,7 @@ describe ProfitBricks::Snapshot do
 
   it '#create' do
     expect(@snapshot.type).to eq('snapshot')
-    expect(@snapshot.id).to be_kind_of(String)
+    expect(@snapshot.id).to match(options[:uuid])
     expect(@snapshot.properties['name']).to eq('Snapshot of storage X on 12.12.12 12:12:12 - updated')
     expect(@snapshot.properties['description']).to eq('description of a snapshot - updated')
     expect(@snapshot.properties['location']).to match(/\w+\/\w+/)
@@ -41,7 +41,7 @@ describe ProfitBricks::Snapshot do
 
     expect(snapshots.count).to be > 0
     expect(snapshots[0].type).to eq('snapshot')
-    expect(snapshots[0].id).to be_kind_of(String)
+    expect(snapshots[0].id).to match(options[:uuid])
     expect(snapshots[0].properties['name']).to be_kind_of(String)
     expect(snapshots[0].properties['description']).to be_kind_of(String)
     expect(snapshots[0].properties['location']).to match(/\w+\/\w+/)
@@ -86,7 +86,7 @@ describe ProfitBricks::Snapshot do
     snapshot.wait_for { ready? }
 
     expect(snapshot.type).to eq('snapshot')
-    expect(snapshot.id).to be_kind_of(String)
+    expect(snapshot.id).to match(options[:uuid])
     expect(snapshot.properties['name']).to eq('New name')
     expect(snapshot.properties['description']).to be_kind_of(String)
     expect(snapshot.properties['location']).to match(/\w+\/\w+/)

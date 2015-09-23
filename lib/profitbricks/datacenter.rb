@@ -2,11 +2,13 @@ module ProfitBricks
   # Datacenter class
   class Datacenter < ProfitBricks::Model
     def delete
-      ProfitBricks.request(
+      response = ProfitBricks.request(
         method: :delete,
         path: "/datacenters/#{self.id}",
         expects: 202
       )
+      self.requestId = response[:requestId]
+      self
     end
 
     def update(options = {})

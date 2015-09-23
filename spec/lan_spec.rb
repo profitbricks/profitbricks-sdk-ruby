@@ -58,7 +58,7 @@ describe ProfitBricks::LAN do
     lan = ProfitBricks::LAN.create(@datacenter.id, options[:lan])
     lan.wait_for { ready? }
 
-    expect(lan.delete).to be_kind_of(Hash)
+    expect(lan.delete.requestId).to match(options[:uuid])
   end
 
   it '#list_members' do

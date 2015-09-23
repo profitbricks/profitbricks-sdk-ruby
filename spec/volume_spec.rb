@@ -18,24 +18,16 @@ describe ProfitBricks::Volume do
     @snapshot.wait_for { ready? }
   end
 
-  # before do
-  #   @volume.wait_for { ready? }
-  #   @volume.reload
-  # end
-
   after(:all) do
     @datacenter.delete
   end
 
   it '#create' do
     expect(@volume.type).to eq('volume')
-    expect(@volume.id).to match(
-      /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i
-    )
+    expect(@volume.id).to match(options[:uuid])
     expect(@volume.properties['name']).to eq('my boot volume for server 1')
     expect(@volume.properties['size']).to be_kind_of(Integer)
     expect(@volume.properties['bus']).to be nil
-    #expect(@volume.properties['type']).to eq('HDD')
     expect(@volume.properties['type']).to be nil
   end
 
@@ -80,7 +72,7 @@ describe ProfitBricks::Volume do
     volume = ProfitBricks::Volume.create(@datacenter.id, options[:volume])
     volume.wait_for { ready? }
 
-    expect(volume.delete).to be_kind_of(Hash)
+    expect(volume.delete.requestId).to match(options[:uuid])
   end
 
   it '#attach' do
