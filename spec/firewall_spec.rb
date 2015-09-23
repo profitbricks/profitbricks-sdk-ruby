@@ -21,7 +21,7 @@ describe ProfitBricks::Firewall do
 
   it '#create' do
     expect(@fwrule.type).to eq('firewall-rule')
-    expect(@fwrule.id).to be_kind_of(String)
+    expect(@fwrule.id).to match(options[:uuid])
     expect(@fwrule.properties['name']).to eq('SSH')
     expect(@fwrule.properties['protocol']).to eq('TCP')
     expect(@fwrule.properties['sourceMac']).to eq('01:23:45:67:89:00')
@@ -90,6 +90,6 @@ describe ProfitBricks::Firewall do
     fwrule = ProfitBricks::Firewall.create(@datacenter.id, @server.id, @nic.id, options[:fwrule])
     fwrule.wait_for { ready? }
 
-    expect(fwrule.delete).to have_key(:requestId)
+    expect(fwrule.delete.requestId).to match(options[:uuid])
   end
 end

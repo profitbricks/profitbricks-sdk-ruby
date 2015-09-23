@@ -12,9 +12,7 @@ describe ProfitBricks::IPBlock do
   # alias: create
   it '#reserve' do
     expect(@ipblock.type).to eq('ipblock')
-    expect(@ipblock.id).to match(
-      /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i
-    )
+    expect(@ipblock.id).to match(options[:uuid])
     expect(@ipblock.properties['ips'].count).to be > 0
     expect(@ipblock.properties['location']).to eq('de/fra')
     expect(@ipblock.properties['size']).to eq(1)
@@ -25,9 +23,7 @@ describe ProfitBricks::IPBlock do
 
     expect(ipblocks.count).to be > 0
     expect(ipblocks[0].type).to eq('ipblock')
-    expect(ipblocks[0].id).to match(
-      /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i
-    )
+    expect(ipblocks[0].id).to match(options[:uuid])
     expect(ipblocks[0].properties['ips'].count).to be > 0
     expect(ipblocks[0].properties['location']).to eq('de/fra')
     expect(ipblocks[0].properties['size']).to be_kind_of(Integer)

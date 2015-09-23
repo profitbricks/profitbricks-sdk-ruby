@@ -17,14 +17,14 @@ describe ProfitBricks::Request do
 
     expect(requests.count).to be > 0
     expect(requests[0].type).to eq('request')
-    expect(requests[0].id).to be_kind_of(String)
+    expect(requests[0].id).to match(options[:uuid])
   end
 
   it '#get' do
     request = ProfitBricks::Request.get(@request.id)
 
     expect(request.type).to eq('request')
-    expect(request.id).to be_kind_of(String)
+    expect(request.id).to match(options[:uuid])
     expect(request.properties['method']).to eq('POST')
   end
 

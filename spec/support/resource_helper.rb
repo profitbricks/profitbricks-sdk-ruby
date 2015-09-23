@@ -1,6 +1,7 @@
 module Helpers
   def options
     {
+      uuid: /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i,
       datacenter: {
         name: 'Ruby SDK Datacenter',
         description: 'SDK test environment',

@@ -35,23 +35,19 @@ describe ProfitBricks::Server do
 
   it '#create' do
     expect(@server.type).to eq('server')
-    expect(@server.id).to match(
-      /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i
-    )
+    expect(@server.id).to match(options[:uuid])
     expect(@server.properties['name']).to eq('New Server')
     expect(@server.properties['cores']).to eq(1)
     expect(@server.properties['ram']).to eq(1024)
     expect(@server.properties['availabilityZone']).to eq('AUTO')
-    expect(@server.properties['vmState']).to eq('RUNNING')
+    expect(@server.properties['vmState']).to eq('SHUTOFF').or eq('RUNNING')
   end
 
   it '#create composite' do
     @composite_server.wait_for(300) { ready? }
     @composite_server.reload
     expect(@composite_server.type).to eq('server')
-    expect(@composite_server.id).to match(
-      /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i
-    )
+    expect(@composite_server.id).to match(options[:uuid])
     expect(@composite_server.properties['name']).to eq('New Composite Server')
     expect(@composite_server.properties['cores']).to eq(1)
     expect(@composite_server.properties['ram']).to eq(1024)
@@ -110,7 +106,7 @@ describe ProfitBricks::Server do
     server = ProfitBricks::Server.create(@datacenter.id, options[:server])
     server.wait_for { ready? }
 
-    expect(server.delete).to be_kind_of(Hash)
+    expect(server.delete.requestId).to match(options[:uuid])
     expect(server.wait_for { ready? }).to be_kind_of(Hash)
   end
 
@@ -198,7 +194,7 @@ describe ProfitBricks::Server do
 
   it '#create_nic' do
     expect(@nic.type).to eq('nic')
-    expect(@nic.id).to be_kind_of(String)
+    expect(@nic.id).to match(options[:uuid])
     expect(@nic.properties['name']).to eq('nic1')
     expect(@nic.properties['ips']).to be_kind_of(Array)
     expect(@nic.properties['dhcp']).to be true
@@ -210,7 +206,7 @@ describe ProfitBricks::Server do
 
     expect(nics.count).to be > 0
     expect(nics[0].type).to eq('nic')
-    expect(nics[0].id).to be_kind_of(String)
+    expect(nics[0].id).to match(options[:uuid])
     expect(nics[0].properties['name']).to eq('nic1')
     expect(nics[0].properties['ips']).to be_kind_of(Array)
     expect(nics[0].properties['dhcp']).to be true
@@ -221,7 +217,7 @@ describe ProfitBricks::Server do
     nic = @server.get_nic(@nic.id)
 
     expect(nic.type).to eq('nic')
-    expect(nic.id).to be_kind_of(String)
+    expect(nic.id).to match(options[:uuid])
     expect(nic.properties['name']).to eq('nic1')
     expect(nic.properties['ips']).to be_kind_of(Array)
     expect(nic.properties['dhcp']).to be true
