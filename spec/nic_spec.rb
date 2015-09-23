@@ -21,7 +21,7 @@ describe ProfitBricks::NIC do
 
   it '#create' do
     expect(@nic.type).to eq('nic')
-    expect(@nic.id).to be_kind_of(String)
+    expect(@nic.id).to match(options[:uuid])
     expect(@nic.properties['name']).to eq('nic1')
     expect(@nic.properties['ips']).to be_kind_of(Array)
     expect(@nic.properties['dhcp']).to be true
@@ -66,7 +66,7 @@ describe ProfitBricks::NIC do
     nic = ProfitBricks::NIC.create(@datacenter.id, @server.id, options[:nic])
     nic.wait_for { ready? }
 
-    expect(nic.delete).to be_kind_of(Hash)
+    expect(nic.delete.requestId).to match(options[:uuid])
   end
 
   it '#list_firewall_rules' do
