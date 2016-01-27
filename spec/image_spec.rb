@@ -10,9 +10,9 @@ describe ProfitBricks::Image do
     expect(@images[0].type).to eq('image')
     expect(@images[0].id).to match(options[:uuid])
     expect(@images[0].properties['name']).to be_kind_of(String)
-    expect(@images[0].properties['description']).to be nil
+    expect(@images[0].properties['description']).to eq('')
     expect(@images[0].properties['location']).to match(/\w+\/\w+/)
-    expect(@images[0].properties['size']).to be_kind_of(Integer)
+    expect(@images[0].properties['size']).to be > 0
   end
 
   it '#get' do
@@ -23,7 +23,7 @@ describe ProfitBricks::Image do
     expect(image.properties['name']).to be_kind_of(String)
     expect(image.properties['description']).to be nil
     expect(image.properties['location']).to match(/\w+\/\w+/)
-    expect(image.properties['size']).to be_kind_of(Integer)
+    expect(image.properties['size']).to be > 0
   end
 
   # Unable to test in production due to public images.

@@ -118,10 +118,12 @@ module ProfitBricks
       # * +options+<Hash>:
       #   - +name+<String> - *Optional*, name of the volume
       #   - +size+<Integer> - *Required*, size of the volume in GB
+      #   - +type+<String> - *Required*, the volume type (HDD or SSD)
       #   - +bus+<String> - *Optional*, the bus type of the volume
       #     * +VIRTIO+ - *Default*
       #     * +IDE+
       #   - +image+<String> - *Optional*, image or snapshot ID
+      #   - +sshKeys+<Array> - *Optional*, a list of public SSH keys
       #
       # ==== Returns
       # * +id+<String> - Universally unique identifer of resource
@@ -152,6 +154,7 @@ module ProfitBricks
       #   - +discVirtioHotUnPlug+<Boolean>
       #   - +discScsiHotPlug+<Boolean>
       #   - +discScsiHotUnPlug+<Boolean>
+      #   - +sshKeys+<Array>
       #
       def create(datacenter_id, options = {})
         response = ProfitBricks.request(

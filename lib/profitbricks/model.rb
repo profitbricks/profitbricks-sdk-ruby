@@ -25,7 +25,7 @@ module ProfitBricks
     def reload
       # Remove URL host and prefix path from href.
       path = URI(self.href).path
-      path.sub!(ProfitBricks::Config.path_prefix, '/')
+      path.sub!(ProfitBricks::Config.path_prefix, '')
       
       response = ProfitBricks.request(
         method: :get,
@@ -80,7 +80,7 @@ module ProfitBricks
     # Add parent resource ID's to response resources. This will provide
     # convenient ID instance variable for subsequent methods.
     def self.add_parent_identities(response)
-      uri = URI(response['href']).path.split('/')
+      uri = URI(response['href']).path
       if response.key?('items') then
         response['items'].each do |item|
           item.merge!(extract_identities(uri))
@@ -92,9 +92,15 @@ module ProfitBricks
 
     def self.extract_identities(uri)
       identities = {}
-      identities['datacenterId'] = uri[3] if uri[2] == 'datacenters'
-      identities['serverId'] = uri[5] if uri[4] == 'servers'
-      identities['nicId'] = uri[7] if uri[6] == 'nics'
+      if match = uri.match(/datacenters\/([-a-f0-9]+)/i) then
+          identities['datacenterId'] = match[1]
+      end
+      if match = uri.match(/servers\/([-a-f0-9]+)/i) then
+          identities['serverId'] = match[1]
+      end
+      if match = uri.match(/nics\/([-a-f0-9]+)/i) then
+          identities['nicId'] = match[1]
+      end
       identities
     end
 

@@ -68,7 +68,8 @@ describe ProfitBricks::Server do
     expect(servers[0].properties['ram']).to eq(1024)
     expect(servers[0].properties['availabilityZone']).to eq('AUTO')
     expect(servers[0].properties['vmState']).to eq('RUNNING')
-    expect(servers[0].properties['bootVolume']).to be nil
+    expect(servers[0].properties['bootVolume']['type']).to eq('volume')
+    expect(servers[0].properties['bootVolume']['id']).to match(options[:uuid])
     expect(servers[0].properties['bootCdrom']).to be nil
   end
 
@@ -82,7 +83,8 @@ describe ProfitBricks::Server do
     expect(server.properties['ram']).to eq(1024)
     expect(server.properties['availabilityZone']).to eq('AUTO')
     expect(server.properties['vmState']).to eq('RUNNING')
-    expect(server.properties['bootVolume']).to be nil
+    expect(server.properties['bootVolume']['type']).to eq('volume')
+    expect(server.properties['bootVolume']['id']).to match(options[:uuid])
     expect(server.properties['bootCdrom']).to be nil
   end
 
@@ -98,7 +100,8 @@ describe ProfitBricks::Server do
     expect(server.properties['ram']).to eq(1024)
     expect(server.properties['availabilityZone']).to eq('AUTO')
     expect(server.properties['vmState']).to eq('RUNNING')
-    expect(server.properties['bootVolume']).to be nil
+    expect(server.properties['bootVolume']['type']).to eq('volume')
+    expect(server.properties['bootVolume']['id']).to match(options[:uuid])
     expect(server.properties['bootCdrom']).to be nil
   end
 

@@ -16,7 +16,8 @@ module Helpers
 
       volume: {
         name: 'my boot volume for server 1',
-        size: 10,
+        size: 5,
+        type: 'HDD',
         licenceType: 'UNKNOWN'
       },
 
@@ -27,7 +28,7 @@ module Helpers
 
       nic: {
         name: 'nic1',
-        dhcp: 'true',
+        dhcp: true,
         lan: 1,
         firewallActive: true
       },
@@ -67,7 +68,8 @@ module Helpers
         volumes: [
           {
             name: 'composite-boot',
-            size: 10,
+            size: 5,
+            type: 'HDD',
             licenceType: 'UNKNOWN'
           }
         ],
