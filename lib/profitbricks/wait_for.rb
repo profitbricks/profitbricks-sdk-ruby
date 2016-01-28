@@ -1,5 +1,8 @@
 module ProfitBricks
-  def self.wait_for(timeout = ProfitBricks::Config.timeout, interval = ProfitBricks::Config.interval, &_block)
+  # Resource wait_for check
+  def self.wait_for(timeout = ProfitBricks::Config.timeout,
+                    interval = ProfitBricks::Config.interval,
+                    &_block)
     duration = 0
     start = Time.now
     retries = 0
@@ -8,9 +11,10 @@ module ProfitBricks
       duration = Time.now - start
     end
     if duration > timeout
-      raise StandardError, "The specified wait_for timeout (#{timeout} seconds) was exceeded"
+      fail StandardError,
+           "The specified wait_for timeout (#{timeout} seconds) was exceeded."
     else
-      { :duration => duration }
+      { duration: duration }
     end
   end
 end

@@ -5,6 +5,7 @@ require 'uri'
 # Top-level module
 module ProfitBricks
   require 'profitbricks/version'
+  require 'profitbricks/errors'
   require 'profitbricks/config'
   require 'profitbricks/profitbricks'
   require 'profitbricks/model'

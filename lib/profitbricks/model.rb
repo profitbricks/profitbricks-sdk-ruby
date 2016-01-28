@@ -19,6 +19,9 @@ module ProfitBricks
 
     def ready?
       status = ProfitBricks::Request.get(self.requestId).status
+      if status.metadata['status'] == 'FAILED' then
+          raise ProfitBricks::Errors::OperationFailure, status.metadata['message']
+      end
       status.metadata['status'] == 'DONE'
     end
 
