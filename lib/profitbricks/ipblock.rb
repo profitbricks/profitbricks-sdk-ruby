@@ -5,7 +5,7 @@ module ProfitBricks
     def release
       ProfitBricks.request(
         method: :delete,
-        path: "/ipblocks/#{self.id}",
+        path: "/ipblocks/#{id}",
         expects: 202
       )
     end

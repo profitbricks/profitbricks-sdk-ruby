@@ -1,12 +1,11 @@
 module ProfitBricks
   # Firewall class
   class Firewall < ProfitBricks::Model
-
     # Delete the firewall rule.
     def delete
       response = ProfitBricks.request(
         method: :delete,
-        path: "/datacenters/#{self.datacenterId}/servers/#{self.serverId}/nics/#{self.nicId}/firewallrules/#{self.id}",
+        path: "/datacenters/#{datacenterId}/servers/#{serverId}/nics/#{nicId}/firewallrules/#{id}",
         expects: 202
       )
       self.requestId = response[:requestId]
@@ -17,18 +16,15 @@ module ProfitBricks
     def update(options = {})
       response = ProfitBricks.request(
         method: :patch,
-        path: "/datacenters/#{self.datacenterId}/servers/#{self.serverId}/nics/#{self.nicId}/firewallrules/#{self.id}",
+        path: "/datacenters/#{datacenterId}/servers/#{serverId}/nics/#{nicId}/firewallrules/#{id}",
         expects: 202,
         body: options.to_json
       )
-      if response
-        @properties = @properties.merge(response['properties'])
-      end
+      @properties = @properties.merge(response['properties'])
       self
     end
 
     class << self
-
       # Create a new firewall rule.
       def create(datacenter_id, server_id, nic_id, options = {})
         response = ProfitBricks.request(
