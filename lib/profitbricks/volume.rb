@@ -1,12 +1,11 @@
 module ProfitBricks
   # Volume class
   class Volume < ProfitBricks::Model
-
     # Delete the volume.
     def delete
       response = ProfitBricks.request(
         method: :delete,
-        path: "/datacenters/#{self.datacenterId}/volumes/#{self.id}",
+        path: "/datacenters/#{datacenterId}/volumes/#{id}",
         expects: 202
       )
       self.requestId = response[:requestId]
@@ -17,23 +16,21 @@ module ProfitBricks
     def update(options = {})
       response = ProfitBricks.request(
         method: :patch,
-        path: "/datacenters/#{self.datacenterId}/volumes/#{self.id}",
+        path: "/datacenters/#{datacenterId}/volumes/#{id}",
         expects: 202,
         body: options.to_json
       )
-      if response
-        @properties = @properties.merge(response['properties'])
-      end
+      @properties = @properties.merge(response['properties'])
       self
     end
 
     # Attach volume to server.
     def attach(server_id)
-      response = ProfitBricks.request(
+      ProfitBricks.request(
         method: :post,
-        path: "/datacenters/#{self.datacenterId}/servers/#{server_id}/volumes",
+        path: "/datacenters/#{datacenterId}/servers/#{server_id}/volumes",
         expects: 202,
-        body: { id: self.id }.to_json
+        body: { id: id }.to_json
       )
       self
     end
@@ -42,7 +39,7 @@ module ProfitBricks
     def detach(server_id)
       ProfitBricks.request(
         method: :delete,
-        path: "/datacenters/#{self.datacenterId}/servers/#{server_id}/volumes/#{self.id}",
+        path: "/datacenters/#{datacenterId}/servers/#{server_id}/volumes/#{id}",
         expects: 202
       )
     end
@@ -84,7 +81,7 @@ module ProfitBricks
     def create_snapshot(options = {})
       response = ProfitBricks.request(
         method: :post,
-        path: "/datacenters/#{self.datacenterId}/volumes/#{self.id}/create-snapshot",
+        path: "/datacenters/#{datacenterId}/volumes/#{id}/create-snapshot",
         headers: { 'Content-Type' => 'application/x-www-form-urlencoded' },
         expects: 202,
         body: URI.encode_www_form(options)
@@ -103,7 +100,7 @@ module ProfitBricks
     def restore_snapshot(snapshot_id)
       ProfitBricks.request(
         method: :post,
-        path: "/datacenters/#{self.datacenterId}/volumes/#{self.id}/restore-snapshot",
+        path: "/datacenters/#{datacenterId}/volumes/#{id}/restore-snapshot",
         headers: { 'Content-Type' => 'application/x-www-form-urlencoded' },
         expects: 202,
         body: URI.encode_www_form(snapshotId: snapshot_id)
@@ -111,17 +108,18 @@ module ProfitBricks
     end
 
     class << self
-
       # Create a new volume.
       #
       # ==== Parameters
       # * +options+<Hash>:
       #   - +name+<String> - *Optional*, name of the volume
       #   - +size+<Integer> - *Required*, size of the volume in GB
+      #   - +type+<String> - *Required*, the volume type (HDD or SSD)
       #   - +bus+<String> - *Optional*, the bus type of the volume
       #     * +VIRTIO+ - *Default*
       #     * +IDE+
       #   - +image+<String> - *Optional*, image or snapshot ID
+      #   - +sshKeys+<Array> - *Optional*, a list of public SSH keys
       #
       # ==== Returns
       # * +id+<String> - Universally unique identifer of resource
@@ -152,6 +150,7 @@ module ProfitBricks
       #   - +discVirtioHotUnPlug+<Boolean>
       #   - +discScsiHotPlug+<Boolean>
       #   - +discScsiHotUnPlug+<Boolean>
+      #   - +sshKeys+<Array>
       #
       def create(datacenter_id, options = {})
         response = ProfitBricks.request(
@@ -166,11 +165,11 @@ module ProfitBricks
 
       # List all datacenter volumes.
       def list(datacenter_id, server_id = nil)
-        if server_id.nil?
-          path = "/datacenters/#{datacenter_id}/volumes"
-        else
-          path = "/datacenters/#{datacenter_id}/servers/#{server_id}/volumes"
-        end
+        path = if server_id.nil?
+                 "/datacenters/#{datacenter_id}/volumes"
+               else
+                 "/datacenters/#{datacenter_id}/servers/#{server_id}/volumes"
+               end
         response = ProfitBricks.request(
           method: :get,
           path: path,
@@ -182,11 +181,11 @@ module ProfitBricks
 
       # Retrieve a datacenter volume.
       def get(datacenter_id, server_id = nil, volume_id)
-        if server_id.nil?
-          path = "/datacenters/#{datacenter_id}/volumes/#{volume_id}"
-        else
-          path = "/datacenters/#{datacenter_id}/servers/#{server_id}/volumes/#{volume_id}"
-        end
+        path = if server_id.nil?
+                 "/datacenters/#{datacenter_id}/volumes/#{volume_id}"
+               else
+                 "/datacenters/#{datacenter_id}/servers/#{server_id}/volumes/#{volume_id}"
+               end
         response = ProfitBricks.request(
           method: :get,
           path: path,

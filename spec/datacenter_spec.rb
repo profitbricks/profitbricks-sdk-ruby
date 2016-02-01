@@ -116,7 +116,7 @@ describe ProfitBricks::Datacenter do
     expect(volumes[0].type).to eq('volume')
     expect(volumes[0].id).to match(options[:uuid])
     expect(volumes[0].properties['name']).to eq('my boot volume for server 1')
-    expect(volumes[0].properties['size']).to eq(10)
+    expect(volumes[0].properties['size']).to eq(5)
     expect(volumes[0].properties['bus']).to be nil
     expect(volumes[0].properties['image']).to be nil
     expect(volumes[0].properties['imagePassword']).to be nil
@@ -131,7 +131,7 @@ describe ProfitBricks::Datacenter do
     expect(volume.type).to eq('volume')
     expect(volume.id).to match(options[:uuid])
     expect(volume.properties['name']).to eq('my boot volume for server 1')
-    expect(volume.properties['size']).to eq(10)
+    expect(volume.properties['size']).to eq(5)
     expect(volume.properties['bus']).to be nil
     expect(volume.properties['image']).to be nil
     expect(volume.properties['imagePassword']).to be nil
@@ -147,7 +147,7 @@ describe ProfitBricks::Datacenter do
     expect(volume.type).to eq('volume')
     expect(volume.id).to match(options[:uuid])
     expect(volume.properties['name']).to eq('my boot volume for server 1')
-    expect(volume.properties['size']).to eq(10)
+    expect(volume.properties['size']).to eq(5)
     expect(volume.properties['bus']).to be nil
     expect(volume.properties['image']).to be nil
     expect(volume.properties['imagePassword']).to be nil

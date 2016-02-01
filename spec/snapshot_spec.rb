@@ -108,6 +108,8 @@ describe ProfitBricks::Snapshot do
     snapshot = @volume.create_snapshot(options[:snapshot])
     snapshot.wait_for { ready? }
 
-    expect(snapshot.delete).to have_key(:requestId)
+    snapshot = snapshot.delete
+    expect(snapshot.type).to eq('snapshot')
+    expect(snapshot.delete.requestId).to match(options[:uuid])
   end
 end

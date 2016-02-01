@@ -28,7 +28,7 @@ describe ProfitBricks::Volume do
     expect(@volume.properties['name']).to eq('my boot volume for server 1')
     expect(@volume.properties['size']).to be_kind_of(Integer)
     expect(@volume.properties['bus']).to be nil
-    expect(@volume.properties['type']).to be nil
+    expect(@volume.properties['type']).to eq('HDD') 
   end
 
   it '#list' do

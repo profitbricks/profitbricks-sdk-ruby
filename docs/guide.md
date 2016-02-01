@@ -147,9 +147,16 @@ Make sure the image you retrieve is in the same location as the virtual data cen
 
 ProfitBricks allows for the creation of multiple storage volumes that can be attached and detached as needed. It is useful to attach an image when creating a storage volume. The storage size is in gigabytes (GB).
  
-    volume = datacenter.create_volume(name: 'My New Volume, size: 40, image: image.id)
+    volume = datacenter.create_volume(name: 'My New Volume', size: 40, image: image.id, type: 'HDD')
     
     volume.wait_for { ready? }
+
+Several public images allow support for SSH authentication. This allows a list of SSH publics keys to supplied when creating a new volume.
+
+    ssh_key = 'ssh-rsa AAAAB3NzaC1yc2E...'
+    volume = datacenter.create_volume(name: 'Boot Volume', size: 40, image: image.id, type: 'HDD', sshKeys: [ ssh_key ])
+
+The corresonding SSH private key can then be used when logging into a server with that boot volume.
 
 ## How To: Update Cores, Memory, and Disk
 

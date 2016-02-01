@@ -5,7 +5,7 @@ module ProfitBricks
     def delete
       response = ProfitBricks.request(
         method: :delete,
-        path: "/datacenters/#{self.datacenterId}/loadbalancers/#{self.id}",
+        path: "/datacenters/#{datacenterId}/loadbalancers/#{id}",
         expects: 202
       )
       self.requestId = response[:requestId]
@@ -16,21 +16,19 @@ module ProfitBricks
     def update(options = {})
       response = ProfitBricks.request(
         method: :patch,
-        path: "/datacenters/#{self.datacenterId}/loadbalancers/#{self.id}",
+        path: "/datacenters/#{datacenterId}/loadbalancers/#{id}",
         expects: 202,
         body: options.to_json
       )
-      if response
-        @properties = @properties.merge(response['properties'])
-      end
+      @properties = @properties.merge(response['properties'])
       self
     end
 
     def list_balanced_nics
       response = ProfitBricks.request(
         method: :get,
-        path: "/datacenters/#{self.datacenterId}/loadbalancers/#{self.id}/balancednics",
-        expects: 200,
+        path: "/datacenters/#{datacenterId}/loadbalancers/#{id}/balancednics",
+        expects: 200
       )
       self.class.instantiate_objects(response)
     end
@@ -38,7 +36,7 @@ module ProfitBricks
     def associate_balanced_nic(nic_id)
       response = ProfitBricks.request(
         method: :post,
-        path: "/datacenters/#{self.datacenterId}/loadbalancers/#{self.id}/balancednics",
+        path: "/datacenters/#{datacenterId}/loadbalancers/#{id}/balancednics",
         expects: 202,
         body: { id: nic_id }.to_json
       )
@@ -48,7 +46,7 @@ module ProfitBricks
     def get_balanced_nic(nic_id)
       response = ProfitBricks.request(
         method: :get,
-        path: "/datacenters/#{self.datacenterId}/loadbalancers/#{self.id}/balancednics/#{nic_id}",
+        path: "/datacenters/#{datacenterId}/loadbalancers/#{id}/balancednics/#{nic_id}",
         expects: 200
       )
       self.class.instantiate_objects(response)
@@ -57,7 +55,7 @@ module ProfitBricks
     def remove_balanced_nic(nic_id)
       ProfitBricks.request(
         method: :delete,
-        path: "/datacenters/#{self.datacenterId}/loadbalancers/#{self.id}/balancednics/#{nic_id}",
+        path: "/datacenters/#{datacenterId}/loadbalancers/#{id}/balancednics/#{nic_id}",
         expects: 202
       )
     end
@@ -73,7 +71,8 @@ module ProfitBricks
       # * +options+<Hash>:
       #   - +name+<String> - *Optional*, name of the loadbalancer
       #   - +ip+<String> - *Optional*, IPv4 address of the loadbalancer
-      #   - +dhcp+<Boolean> - *Optional*, Indicates if the loadbalancer will reserve an IP using DHCP
+      #   - +dhcp+<Boolean> - *Optional*, Indicates if the loadbalancer will
+      #     reserve an IP using DHCP
       #
       # ==== Returns
       # * +id+<String> - Universally unique identifer of resource

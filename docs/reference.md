@@ -205,7 +205,7 @@ Retrieve a volume:
 
 Create a volume:
 
-    volume = datacenter.create_volume(name: "volume1", size: 20)
+    volume = datacenter.create_volume(name: "volume1", size: 20, type: "SSD")
 
 Update a volume:
 

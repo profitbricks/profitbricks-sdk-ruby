@@ -8,13 +8,13 @@ module ProfitBricks
     ProfitBricks::Config.debug = false
     ProfitBricks::Config.protocol = 'https'
     ProfitBricks::Config.port = '443'
-    ProfitBricks::Config.path_prefix = '/rest/'
+    ProfitBricks::Config.path_prefix = '/rest/v2'
     yield ProfitBricks::Config
 
     if ProfitBricks::Config.host
       url = construct_url
     else
-      url = ProfitBricks::Config.url || 'https://api.profitbricks.com/rest/'
+      url = ProfitBricks::Config.url || 'https://api.profitbricks.com/rest/v2'
     end
 
     params = {
@@ -69,7 +69,7 @@ module ProfitBricks
 
   def self.add_request_id(response)
     location ||= response.headers['Location']
-    request_id ||= URI(location).path.split('/')[3] unless location.nil?
+    request_id ||= location.match(/requests\/([-a-f0-9]+)/i)[1] unless location.nil?
     body = parse_json(response.body)
 
     if body.nil?
