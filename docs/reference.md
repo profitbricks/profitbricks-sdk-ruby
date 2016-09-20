@@ -68,15 +68,15 @@ Retrieve a server within a datacenter:
 Create a server:
 
     datacenter = Datacenter.get(datacenter_id)
-    server = datacenter.create_server(name: "server1", cores: 2, ram: 4096)
+    server = datacenter.create_server(name: "server1", cores: 2, cpuFamily: "INTEL_XEON", ram: 4096)
 
 Create a composite server:
 
-    volumes = [ { name: "server2-os", size: 10, image: "4dc4585c-505a-11e5-bfc6-52540066fee9", bus: "VIRTIO", imagePassword: "secretpassword" }, { name: "server2-data", size: 5, bus: "VIRTIO", licenceType: "UNKNOWN" } ]
+    volumes = [ { name: "server2-os", size: 10, type: "HDD", image: "4dc4585c-505a-11e5-bfc6-52540066fee9", bus: "VIRTIO", imagePassword: "secretpassword" }, { name: "server2-data", size: 5, type: "SSD" bus: "VIRTIO", licenceType: "UNKNOWN" } ]
     fwrules = [ { name: "SSH", protocol: "TCP", portRangeStart: 22, portRangeEnd: 22 } ]
     nics = [ { name: "public", lan: 1, firewallrules: fwrules }, { name: "private", lan: 2 } ]
 
-    server = datacenter.create_server(name: "server2", cores: 1, ram: 1024, volumes: volumes, nics: nics)
+    server = datacenter.create_server(name: "server2", cores: 1, ram: 1024, cpuFamily: "AMD_OPTERON", volumes: volumes, nics: nics)
 
 Update a server:
 
@@ -244,11 +244,11 @@ Retrieve a loadbalancer:
 
 Create a loadbalancer:
 
-    lb = datacenter.create_loadbalancer(name: “lb1”, …)
+    lb = datacenter.create_loadbalancer(name: "lb1", ...)
 
 Update a loadbalancer:
 
-    lb.update(name: “lb1_rename”)
+    lb.update(name: "lb1_rename")
 
 Remove a loadbalancer:
 
