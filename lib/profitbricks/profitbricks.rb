@@ -8,13 +8,13 @@ module ProfitBricks
     ProfitBricks::Config.debug = false
     ProfitBricks::Config.protocol = 'https'
     ProfitBricks::Config.port = '443'
-    ProfitBricks::Config.path_prefix = '/rest/v2'
+    ProfitBricks::Config.path_prefix = 'cloudapi/v3'
     yield ProfitBricks::Config
 
     if ProfitBricks::Config.host
       url = construct_url
     else
-      url = ProfitBricks::Config.url || 'https://api.profitbricks.com/rest/v2'
+      url = ProfitBricks::Config.url || 'https://api.profitbricks.com/cloudapi/v3'
     end
 
     params = {
@@ -96,11 +96,7 @@ module ProfitBricks
   end
 
   def self.content_type(method)
-    if method == :patch
-      'application/vnd.profitbricks.partial-properties+json'
-    else
-      'application/vnd.profitbricks.resource+json'
-    end
+    'application/json'
   end
 
   def self.prepend_path_prefix(params)

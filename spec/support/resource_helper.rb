@@ -18,7 +18,8 @@ module Helpers
         name: 'my boot volume for server 1',
         size: 5,
         type: 'HDD',
-        licenceType: 'UNKNOWN'
+        licenceType: 'UNKNOWN',
+        availabilityZone: 'AUTO'
       },
 
       snapshot: {
@@ -30,7 +31,8 @@ module Helpers
         name: 'nic1',
         dhcp: true,
         lan: 1,
-        firewallActive: true
+        firewallActive: true,
+        nat: false
       },
 
       fwrule: {
