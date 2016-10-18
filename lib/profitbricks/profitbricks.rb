@@ -88,6 +88,7 @@ module ProfitBricks
 
   def self.add_headers(params)
     params[:headers] ||= {}
+    params[:headers]["User-Agent"] ||= "profitbricks-ruby-sdk/#{ProfitBricks::VERSION}"
     params[:headers].merge!(ProfitBricks::Config.headers) if ProfitBricks::Config.headers
     unless params[:headers].key?('Content-Type')
       params[:headers]['Content-Type'] = content_type(params[:method])
