@@ -19,7 +19,7 @@ Or install it yourself as:
 ## Documentation and Support
 
 * A guide and reference documentation can be found in the repo docs/ directory.
-* [ProfitBricks SDK for Ruby](https://devops.profitbricks.com/libraries/profitbricks-sdk-ruby/) guide.
+* [ProfitBricks SDK for Ruby](https://devops.profitbricks.com/libraries/ruby/) guide.
 * [ProfitBricks REST API](https://devops.profitbricks.com/api/rest/) documentation.
 * Ask a question or discuss at [ProfitBricks DevOps Central](https://devops.profitbricks.com/community).
 * Report an [issue here](https://github.com/profitbricks/profitbricks-sdk-ruby/issues).
