@@ -251,6 +251,6 @@ The sample below shows you how to add a second NIC to an existing server and LAN
 
 Further documentation can be found in the project repository on GitHub.
 
-    [https://github.com/StackPointCloud/profitbricks-sdk-ruby](https://github.com/StackPointCloud/profitbricks-sdk-ruby)
+[https://github.com/profitbricks/profitbricks-sdk-ruby](https://github.com/profitbricks/profitbricks-sdk-ruby)
 
 Questions and discussions can be directed to [ProfitBricks DevOps Central](https://devops.profitbricks.com/) site.
