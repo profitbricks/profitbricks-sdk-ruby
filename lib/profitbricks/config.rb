@@ -23,6 +23,8 @@ module ProfitBricks
       attr_accessor :timeout
       # Polling interval value for wait_for() method, default: 3 seconds
       attr_accessor :interval
+      # Request depth, default: 1
+      attr_accessor :depth
       # Enable or disable Excon debugging, default: false
       attr_accessor :debug
     end
