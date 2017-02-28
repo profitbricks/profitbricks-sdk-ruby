@@ -64,6 +64,7 @@ Here is a list and brief description of available configuration parameters:
 * ```global_classes``` - Disable (flatten) ProfitBricks class namespace; set to false to avoid name conflicts, default: true
 * ```timeout``` - Timeout value for wait_for() method, default 60 seconds
 * ```interval``` - Polling interval value for wait_for() method, default: 3 seconds
+* ```depth``` - Request depth, default: 1
 * ```debug``` - Enable or disable Excon debugging, default: false
 
 Example usage:
@@ -75,6 +76,7 @@ Example usage:
       config.path_prefix = '/rest/'
       config.timeout = 120
       config.interval = 1
+      config.depth = 5
     end
 
 ## How To: Create a Data Center
