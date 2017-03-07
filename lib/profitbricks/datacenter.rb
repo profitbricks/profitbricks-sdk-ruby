@@ -19,7 +19,7 @@ module ProfitBricks
         body: options.to_json
       )
       if response
-        # @properties = @properties.merge!(response['properties'])
+        self.requestId = response['requestId']
         @properties.merge!(response['properties'])
       end
       self
