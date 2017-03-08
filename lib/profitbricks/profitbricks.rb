@@ -4,6 +4,7 @@ module ProfitBricks
     # Configuration variable defaults
     ProfitBricks::Config.timeout = 60
     ProfitBricks::Config.interval = 5
+    ProfitBricks::Config.depth = 1
     ProfitBricks::Config.global_classes = true
     ProfitBricks::Config.debug = false
     ProfitBricks::Config.protocol = 'https'
@@ -22,7 +23,7 @@ module ProfitBricks
       password: ProfitBricks::Config.password,
       debug: ProfitBricks::Config.debug,
       omit_default_port: true,
-      query: { depth: 1 }
+      query: { depth: ProfitBricks::Config.depth }
     }
 
     @client = Excon.new(url, params)

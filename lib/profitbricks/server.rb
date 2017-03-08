@@ -20,7 +20,10 @@ module ProfitBricks
         expects: 202,
         body: options.to_json
       )
-      @properties = @properties.merge(response['properties']) if response
+      if response
+        self.requestId = response['requestId']
+        @properties = @properties.merge(response['properties'])
+      end
       self
     end
 
