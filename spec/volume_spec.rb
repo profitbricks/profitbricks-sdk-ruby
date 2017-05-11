@@ -22,6 +22,10 @@ describe ProfitBricks::Volume do
     @datacenter.delete
   end
 
+  it '#create failure' do
+    expect { ProfitBricks::Volume.create(@datacenter.id, options[:bad_volume]) }.to raise_error
+  end
+
   it '#create' do
     expect(@volume.type).to eq('volume')
     expect(@volume.id).to match(options[:uuid])

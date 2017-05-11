@@ -3,9 +3,9 @@ module ProfitBricks
   class Datacenter < ProfitBricks::Model
     def delete
       response = ProfitBricks.request(
-        method: :delete,
-        path: "/datacenters/#{id}",
-        expects: 202
+          method: :delete,
+          path: "/datacenters/#{id}",
+          expects: 202
       )
       self.requestId = response[:requestId]
       self
@@ -13,10 +13,10 @@ module ProfitBricks
 
     def update(options = {})
       response = ProfitBricks.request(
-        path: "/datacenters/#{id}",
-        method: :patch,
-        expects: 202,
-        body: options.to_json
+          path: "/datacenters/#{id}",
+          method: :patch,
+          expects: 202,
+          body: options.to_json
       )
       if response
         self.requestId = response['requestId']
@@ -84,31 +84,72 @@ module ProfitBricks
 
     class << self
       def create(options = {})
+        entities = {}
+
+        # Retrieve servers collection if present and generate appropriate JSON.
+        if options.key?(:servers)
+          entities[:servers] = collect_entities(options.delete(:servers))
+        end
+
+        # Retrieve volumes collection if present and generate appropriate JSON.
+        if options.key?(:volumes)
+          entities[:volumes] = collect_entities(options.delete(:volumes))
+        end
+
+        # Retrieve volumes collection if present and generate appropriate JSON.
+        if options.key?(:loadbalancers)
+          entities[:loadbalancers] = collect_entities(options.delete(:loadbalancers))
+        end
+
+        # Retrieve volumes collection if present and generate appropriate JSON.
+        if options.key?(:lans)
+          entities[:lans] = collect_entities(options.delete(:lans))
+        end
+
         response = ProfitBricks.request(
-          method: :post,
-          path: '/datacenters',
-          body: { properties: options }.to_json,
-          expects: 202
+            method: :post,
+            path: '/datacenters',
+            body: {properties: options, entities: entities}.to_json,
+            expects: 202
         )
         instantiate_objects(response)
       end
 
       def list
         response = ProfitBricks.request(
-          method: :get,
-          path: '/datacenters',
-          expects: 200
+            method: :get,
+            path: '/datacenters',
+            expects: 200
         )
         instantiate_objects(response)
       end
 
       def get(datacenter_id)
         response = ProfitBricks.request(
-          method: :get,
-          path: "/datacenters/#{datacenter_id}",
-          expects: 200
+            method: :get,
+            path: "/datacenters/#{datacenter_id}",
+            expects: 200
         )
         instantiate_objects(response)
+      end
+    end
+
+    private
+    def self.collect_entities(entities)
+      if entities.is_a?(Array) && entities.length > 0
+        items = []
+        entities.each do |entity|
+          if entity.key?(:volumes)
+            subentities = collect_entities(entity.delete(:volumes))
+            items << {
+                properties: entity,
+                entities: {volumes: subentities}
+            }
+          else
+            items << {properties: entity}
+          end
+        end
+        {items: items}
       end
     end
   end

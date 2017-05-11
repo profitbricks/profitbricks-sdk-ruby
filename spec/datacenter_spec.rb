@@ -5,6 +5,9 @@ describe ProfitBricks::Datacenter do
     @datacenter = ProfitBricks::Datacenter.create(options[:datacenter])
     @datacenter.wait_for { ready? }
 
+    @composite_datacenter= ProfitBricks::Datacenter.create(options[:datacenter_composite])
+    @datacenter.wait_for { ready? }
+
     @server = @datacenter.create_server(options[:server])
     @server.wait_for { ready? }
 
@@ -20,6 +23,7 @@ describe ProfitBricks::Datacenter do
 
   after(:all) do
     @datacenter.delete
+    @composite_datacenter.delete
   end
 
   it '#create' do
@@ -28,6 +32,15 @@ describe ProfitBricks::Datacenter do
     expect(@datacenter.properties['name']).to eq('Ruby SDK Datacenter')
     expect(@datacenter.properties['description']).to eq('SDK test environment')
     expect(@datacenter.properties['location']).to eq('de/fkb')
+  end
+
+  it '#create composite' do
+    @composite_datacenter.wait_for(300) { ready? }
+    @composite_datacenter.reload
+    expect(@composite_datacenter.type).to eq('datacenter')
+    expect(@composite_datacenter.id).to match(options[:uuid])
+    expect(@composite_datacenter.properties['name']).to eq('Ruby SDK Composite Datacenter')
+    expect(@composite_datacenter.entities['servers']['items'].count).to be > 0
   end
 
   it '#list' do
@@ -47,6 +60,10 @@ describe ProfitBricks::Datacenter do
     expect(datacenter.properties['description']).to eq('SDK test environment')
     expect(datacenter.properties['location']).to eq('de/fkb')
     expect(datacenter.properties['version']).to be_kind_of(Integer)
+  end
+
+  it '#get failure' do
+    expect { ProfitBricks::Datacenter.get("bad_id") }.to raise_error
   end
 
   it '#update' do
