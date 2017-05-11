@@ -28,25 +28,20 @@ module ProfitBricks
       self
     end
 
-    # List LAN members.
-    def list_members
-      response = ProfitBricks.request(
-        method: :get,
-        path: "/datacenters/#{self.datacenterId}/lans/#{self.id}/nics",
-        expects: 200,
-      )
-      self.class.instantiate_objects(response)
-    end
-
     class << self
 
       # Create a new LAN.
       def create(datacenter_id, options = {})
+        entities = {}
+        # Retrieve nics collection if present and generate appropriate JSON.
+        if options.key?('nics')
+          entities[:nics] =collect_entities(options.delete('nics'))
+        end
         response = ProfitBricks.request(
           method: :post,
           path: "/datacenters/#{datacenter_id}/lans",
           expects: 202,
-          body: { properties: options }.to_json
+          body: { properties: options, entities: entities }.to_json
         )
         add_parent_identities(response)
         instantiate_objects(response)
@@ -72,6 +67,18 @@ module ProfitBricks
         )
         add_parent_identities(response)
         instantiate_objects(response)
+      end
+    end
+
+    private
+
+    def self.collect_entities(entities)
+      items = []
+      if entities.is_a?(Array) && entities.length > 0
+        entities.each do |entity|
+          items << { id: entity }
+        end
+        {items: items}
       end
     end
   end
