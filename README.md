@@ -1000,6 +1000,7 @@ The following table describes the request arguments:
 |---|:-:|---|---|
 | ipblock_id | **yes** | string | The ID of the IP block. |
 
+```
 ipblock = ProfitBricks::IPBlock.get(ipblock_id)
 ```
 
