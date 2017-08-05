@@ -15,12 +15,13 @@ describe ProfitBricks::Server do
     @volume.wait_for { ready? }
     @volume.attach(@server.id)
 
-    @image = ProfitBricks::Image.list[0]
+    @image = get_test_image('CDROM')
     @server.attach_cdrom(@image.id)
+    @server.wait_for { ready? }
 
     @composite_server = ProfitBricks::Server.create(
-      @datacenter.id,
-      options[:composite_server]
+        @datacenter.id,
+        options[:composite_server]
     )
   end
 
@@ -90,8 +91,8 @@ describe ProfitBricks::Server do
 
   it '#update' do
     server = @server.update(
-      name: 'New Server - Updated',
-      cores: 2
+        name: 'New Server - Updated',
+        cores: 2
     )
 
     expect(server.id).to eq(@server.id)
@@ -156,44 +157,46 @@ describe ProfitBricks::Server do
     expect(volume).to be_kind_of(Hash)
   end
 
-  #it '#list_cdroms' do
-  #  cdroms = @server.list_cdroms
+  it '#list_cdroms' do
+    cdroms = @server.list_cdroms
 
-  #  expect(cdroms.count).to be > 0
-  #  expect(cdroms[0].type).to eq('image')
-  #  expect(cdroms[0].properties['name']).to eq('Ubuntu 14.04')
-  #  expect(cdroms[0].properties['description']).to eq('Ubuntu image description')
-  #  expect(cdroms[0].properties['size']).to be_kind_of(Integer)
-  #end
+    expect(cdroms.count).to be > 0
+    expect(cdroms[0].type).to eq('image')
+    expect(cdroms[0].properties['name']).to eq(@image.properties['name'])
+    expect(cdroms[0].properties['size']).to be_kind_of(Float)
+  end
 
-  #it '#get_cdrom' do
-  #  cdrom = @server.get_cdrom(@image.id)
+  it '#get_cdrom' do
+    cdrom = @server.get_cdrom(@image.id)
 
-  #  expect(cdrom.type).to eq('image')
-  #  expect(cdrom.properties['name']).to eq('Ubuntu 14.04')
-  #  expect(cdrom.properties['description']).to eq('Ubuntu image description')
-  #  expect(cdrom.properties['size']).to be_kind_of(Integer)
-  #end
+    expect(cdrom.type).to eq('image')
+    expect(cdrom.properties['name']).to eq(@image.properties['name'])
+    expect(cdrom.properties['size']).to be_kind_of(Float)
+  end
 
-  #it '#attach_cdrom, detach_cdrom' do
-  #  # Detach existing image
-  #  expect(@server.detach_cdrom(@image.id)).to be true
+  it '#attach_cdrom, detach_cdrom' do
+    # Detach existing image
+    @server.detach_cdrom(@image.id)
+    @server.wait_for { ready? }
 
-  #  # Attach image
-  #  image = @server.attach_cdrom(@image.id)
+    # Attach image
+    image = @server.attach_cdrom(@image.id)
+    @server.wait_for { ready? }
 
-  #  expect(image.type).to eq('image')
-  #  expect(image.properties['name']).to be_kind_of(String)
-  #  # expect(image.properties['description']).to eq('Ubuntu image description')
-  #  expect(image.properties['size']).to be_kind_of(Integer)
-  #end
+    expect(image.type).to eq('image')
+    expect(image.properties['name']).to be_kind_of(String)
+    expect(image.properties['size']).to be_kind_of(Float)
+  end
 
-  # it '#detach_cdrom' do
-  #   @server.attach_cdrom(@image.id)
-  #   cdrom = @server.detach_cdrom(@image.id)
+  it '#detach_cdrom' do
+    @server.attach_cdrom(@image.id)
+    @server.wait_for { ready? }
 
-  #   expect(cdrom).to be true
-  # end
+    cdrom = @server.detach_cdrom(@image.id)
+    @server.wait_for { ready? }
+
+    expect(cdrom).to be_kind_of(Hash)
+  end
 
   it '#create_nic' do
     expect(@nic.type).to eq('nic')

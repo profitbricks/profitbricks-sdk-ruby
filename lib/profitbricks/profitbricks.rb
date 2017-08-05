@@ -91,10 +91,10 @@ module ProfitBricks
     params[:headers] ||= {}
     params[:headers].merge!(ProfitBricks::Config.headers) if ProfitBricks::Config.headers
 
-    if params[:headers]["User-Agent"]
-      params[:headers]["User-Agent"] = "profitbricks-ruby-sdk/#{ProfitBricks::VERSION} " + params[:headers]["User-Agent"]
+    if params[:headers]['User-Agent']
+      params[:headers]['User-Agent'] = "profitbricks-ruby-sdk/#{ProfitBricks::VERSION} " + params[:headers]['User-Agent']
     else
-      params[:headers]["User-Agent"] = "profitbricks-ruby-sdk/#{ProfitBricks::VERSION}"
+      params[:headers]['User-Agent'] = "profitbricks-ruby-sdk/#{ProfitBricks::VERSION}"
     end
 
     unless params[:headers].key?('Content-Type')
