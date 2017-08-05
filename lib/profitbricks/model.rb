@@ -27,8 +27,14 @@ module ProfitBricks
 
     def reload
       # Remove URL host and prefix path from href.
+      # Example: server
       path = URI(self.href).path
+      # => /cloudapi/v3/datacenters/UUID/servers/UUID
       path.sub!(ProfitBricks::Config.path_prefix, '')
+      # => //datacenters/UUID/servers/UUID
+      # => raises Excon::Error::NotFound
+      path.sub!(/\/{2,}/, '/')
+      # => /datacenters/UUID/servers/UUID
       
       response = ProfitBricks.request(
         method: :get,
