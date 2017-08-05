@@ -26,6 +26,16 @@ describe ProfitBricks::LAN do
     expect(@lan.properties['public']).to be true
   end
 
+  it '#create composite' do
+    create_data=options[:lan]
+    nics=[@nic.id]
+    create_data['nics']=nics
+    @lan_composite = ProfitBricks::LAN.create(@datacenter.id,create_data)
+    @lan_composite.wait_for { ready? }
+    expect(@lan_composite.type).to eq('lan')
+    expect(@lan_composite.entities['nics']['items'].size).to eq(1)
+  end
+
   it '#list' do
     lans = ProfitBricks::LAN.list(@datacenter.id)
 
@@ -46,7 +56,7 @@ describe ProfitBricks::LAN do
   end
 
   it '#update' do
-    lan = @lan.update(public: 'false')
+    lan = @lan.update(public: false)
 
     expect(lan.type).to eq('lan')
     expect(lan.id).to eq(@lan.id)
@@ -59,12 +69,5 @@ describe ProfitBricks::LAN do
     lan.wait_for { ready? }
 
     expect(lan.delete.requestId).to match(options[:uuid])
-  end
-
-  it '#list_members' do
-    members = @lan.list_members
-
-    expect(members.count).to be > 0
-    expect(members[0].type).to eq('nic')
   end
 end
