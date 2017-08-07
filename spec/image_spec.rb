@@ -26,6 +26,17 @@ describe ProfitBricks::Image do
     expect(image.properties['size']).to be > 0
   end
 
+  it '#get_by_alias' do
+    ubuntu_images = ProfitBricks::Image.get_by_alias('ubuntu:latest')
+
+    expect(ubuntu_images.count).to be > 0
+    image = ubuntu_images[0]
+    puts image.inspect
+
+    expect(image.type).to eq('image')
+    expect(image.href).to match(/\w+\/\w+/)
+  end
+
   # Unable to test in production due to public images.
   #
   # it '#update' do

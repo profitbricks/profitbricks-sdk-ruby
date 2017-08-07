@@ -38,6 +38,7 @@ Version: **profitbricks-sdk-ruby v3.0.3**
   * [Images](#images)
     * [List Images](#list-images)
     * [Get an Image](#get-an-image)
+    * [Search an image by image alias](#search-an-image-by-image-alias)
     * [Update an Image](#update-an-image)
     * [Delete an Image](#delete-an-image)
   * [Volumes](#volumes)
@@ -707,6 +708,22 @@ The following table describes the request arguments:
 
 ```
  ProfitBricks::Image.get(image_id)
+```
+
+---
+
+#### Search an image by image alias
+
+Retrieve a list of images.
+
+The following table describes the request arguments:
+
+| Name| Required | Type | Description |
+|---|:-:|---|---|
+| image_alias | **yes** | string | The image alias of the image. |
+
+```
+ ProfitBricks::Image.get_by_alias(image_alias)
 ```
 
 ---

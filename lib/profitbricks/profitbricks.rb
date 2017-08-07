@@ -9,13 +9,13 @@ module ProfitBricks
     ProfitBricks::Config.debug = false
     ProfitBricks::Config.protocol = 'https'
     ProfitBricks::Config.port = '443'
-    ProfitBricks::Config.path_prefix = 'cloudapi/v3'
+    ProfitBricks::Config.path_prefix = 'cloudapi/v4'
     yield ProfitBricks::Config
 
     if ProfitBricks::Config.host
       url = construct_url
     else
-      url = ProfitBricks::Config.url || 'https://api.profitbricks.com/cloudapi/v3'
+      url = ProfitBricks::Config.url || 'https://api.profitbricks.com/cloudapi/v4'
     end
 
     params = {

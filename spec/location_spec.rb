@@ -16,5 +16,6 @@ describe ProfitBricks::Location do
     expect(location.type).to eq('location')
     expect(location.id).to match(/^\w+\/\w+$/)
     expect(location.properties['name']).to be_kind_of(String)
+    expect(location.properties['imageAliases']).to include('ubuntu:latest')
   end
 end

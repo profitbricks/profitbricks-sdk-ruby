@@ -47,6 +47,16 @@ module ProfitBricks
         )
         instantiate_objects(response)
       end
+
+      # Retrieve an image.
+      def get_by_alias(image_alias)
+        response = ProfitBricks.request(
+          method: :get,
+          path: "/images?image_alias=#{image_alias}",
+          expects: 200
+        )
+        instantiate_objects(response)
+      end
     end
   end
 end
