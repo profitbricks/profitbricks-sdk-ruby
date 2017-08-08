@@ -26,21 +26,29 @@ describe ProfitBricks::Datacenter do
     @composite_datacenter.delete
   end
 
-  it '#create' do
+  it '#create simple' do
     expect(@datacenter.type).to eq('datacenter')
     expect(@datacenter.id).to match(options[:uuid])
-    expect(@datacenter.properties['name']).to eq('Ruby SDK Datacenter')
-    expect(@datacenter.properties['description']).to eq('SDK test environment')
-    expect(@datacenter.properties['location']).to eq('de/fkb')
+    expect(@datacenter.properties['name']).to eq('Ruby SDK Test')
+    expect(@datacenter.properties['description']).to eq('Ruby SDK test datacenter')
+    expect(@datacenter.properties['location']).to eq('us/las')
+  end
+
+  it '#create failure' do
+   expect { ProfitBricks::Datacenter.create(options[:bad_datacenter]) }.to raise_error(Excon::Error::UnprocessableEntity, /Attribute 'location' is required/)
   end
 
   it '#create composite' do
     @composite_datacenter.wait_for(300) { ready? }
     @composite_datacenter.reload
+
     expect(@composite_datacenter.type).to eq('datacenter')
     expect(@composite_datacenter.id).to match(options[:uuid])
-    expect(@composite_datacenter.properties['name']).to eq('Ruby SDK Composite Datacenter')
+    expect(@composite_datacenter.properties['name']).to eq('Ruby SDK Test Composite')
+    expect(@composite_datacenter.properties['description']).to eq('Ruby SDK test composite datacenter')
+    expect(@composite_datacenter.properties['location']).to eq('us/las')
     expect(@composite_datacenter.entities['servers']['items'].count).to be > 0
+    expect(@composite_datacenter.entities['volumes']['items'].count).to be > 0
   end
 
   it '#list' do
@@ -56,25 +64,25 @@ describe ProfitBricks::Datacenter do
 
     expect(datacenter.type).to eq('datacenter')
     expect(datacenter.id).to eq(@datacenter.id)
-    expect(datacenter.properties['name']).to eq('Ruby SDK Datacenter')
-    expect(datacenter.properties['description']).to eq('SDK test environment')
-    expect(datacenter.properties['location']).to eq('de/fkb')
+    expect(datacenter.properties['name']).to eq('Ruby SDK Test')
+    expect(datacenter.properties['description']).to eq('Ruby SDK test datacenter')
+    expect(datacenter.properties['location']).to eq('us/las')
     expect(datacenter.properties['version']).to be_kind_of(Integer)
   end
 
   it '#get failure' do
-    expect { ProfitBricks::Datacenter.get("bad_id") }.to raise_error
+    expect { ProfitBricks::Datacenter.get("bad_id") }.to raise_error(Excon::Error::NotFound, /Resource does not exist/)
   end
 
   it '#update' do
     datacenter = ProfitBricks::Datacenter.get(@datacenter.id)
-    datacenter.update(name: 'datacenter1', description: 'Ruby SDK test environment')
+    datacenter.update(name: 'Ruby SDK Test - RENAME')
 
     expect(datacenter.id).to eq(@datacenter.id)
-    expect(datacenter.properties['name']).to eq('datacenter1')
-    expect(datacenter.properties['description']).to eq('Ruby SDK test environment')
-    expect(datacenter.properties['location']).to eq('de/fkb')
+    expect(datacenter.properties['name']).to eq('Ruby SDK Test - RENAME')
+    expect(datacenter.properties['location']).to eq('us/las')
     expect(datacenter.properties['version']).to be_kind_of(Integer)
+    expect(datacenter.properties['version']).to be > 0
   end
 
   it '#delete' do
@@ -90,10 +98,10 @@ describe ProfitBricks::Datacenter do
 
     expect(servers[0].type).to eq('server')
     expect(servers[0].id).to match(options[:uuid])
-    expect(servers[0].properties['name']).to eq('New Server')
+    expect(servers[0].properties['name']).to eq('Ruby SDK Test')
     expect(servers[0].properties['cores']).to be_kind_of(Integer)
     expect(servers[0].properties['ram']).to eq(1024)
-    expect(servers[0].properties['availabilityZone']).to eq('AUTO')
+    expect(servers[0].properties['availabilityZone']).to eq('ZONE_1')
     expect(servers[0].properties['vmState']).to eq('RUNNING')
     expect(servers[0].properties['bootVolume']).to be nil
     expect(servers[0].properties['bootCdrom']).to be nil
@@ -104,10 +112,10 @@ describe ProfitBricks::Datacenter do
 
     expect(server.type).to eq('server')
     expect(server.id).to match(options[:uuid])
-    expect(server.properties['name']).to eq('New Server')
+    expect(server.properties['name']).to eq('Ruby SDK Test')
     expect(server.properties['cores']).to be_kind_of(Integer)
     expect(server.properties['ram']).to eq(1024)
-    expect(server.properties['availabilityZone']).to eq('AUTO')
+    expect(server.properties['availabilityZone']).to eq('ZONE_1')
     expect(server.properties['vmState']).to eq('RUNNING')
     expect(server.properties['bootVolume']).to be nil
     expect(server.properties['bootCdrom']).to be nil
@@ -118,10 +126,10 @@ describe ProfitBricks::Datacenter do
 
     expect(server.type).to eq('server')
     expect(server.id).to eq(@server.id)
-    expect(server.properties['name']).to eq('New Server')
+    expect(server.properties['name']).to eq('Ruby SDK Test')
     expect(server.properties['cores']).to be_kind_of(Integer)
     expect(server.properties['ram']).to eq(1024)
-    expect(server.properties['availabilityZone']).to eq('AUTO')
+    expect(server.properties['availabilityZone']).to eq('ZONE_1')
     expect(server.properties['vmState']).to eq('RUNNING')
     expect(server.properties['bootVolume']).to be nil
     expect(server.properties['bootCdrom']).to be nil
@@ -132,8 +140,8 @@ describe ProfitBricks::Datacenter do
 
     expect(volumes[0].type).to eq('volume')
     expect(volumes[0].id).to match(options[:uuid])
-    expect(volumes[0].properties['name']).to eq('my boot volume for server 1')
-    expect(volumes[0].properties['size']).to eq(5)
+    expect(volumes[0].properties['name']).to eq('Ruby SDK Test')
+    expect(volumes[0].properties['size']).to eq(2)
     expect(volumes[0].properties['bus']).to be nil
     expect(volumes[0].properties['image']).to be nil
     expect(volumes[0].properties['imagePassword']).to be nil
@@ -147,8 +155,8 @@ describe ProfitBricks::Datacenter do
 
     expect(volume.type).to eq('volume')
     expect(volume.id).to match(options[:uuid])
-    expect(volume.properties['name']).to eq('my boot volume for server 1')
-    expect(volume.properties['size']).to eq(5)
+    expect(volume.properties['name']).to eq('Ruby SDK Test')
+    expect(volume.properties['size']).to eq(2)
     expect(volume.properties['bus']).to be nil
     expect(volume.properties['image']).to be nil
     expect(volume.properties['imagePassword']).to be nil
@@ -163,8 +171,8 @@ describe ProfitBricks::Datacenter do
 
     expect(volume.type).to eq('volume')
     expect(volume.id).to match(options[:uuid])
-    expect(volume.properties['name']).to eq('my boot volume for server 1')
-    expect(volume.properties['size']).to eq(5)
+    expect(volume.properties['name']).to eq('Ruby SDK Test')
+    expect(volume.properties['size']).to eq(2)
     expect(volume.properties['bus']).to be nil
     expect(volume.properties['image']).to be nil
     expect(volume.properties['imagePassword']).to be nil
@@ -178,7 +186,7 @@ describe ProfitBricks::Datacenter do
 
     expect(loadbalancers[0].type).to eq('loadbalancer')
     expect(loadbalancers[0].id).to be_kind_of(String)
-    expect(loadbalancers[0].properties['name']).to eq('My LB')
+    expect(loadbalancers[0].properties['name']).to eq('Ruby SDK Test')
     expect(loadbalancers[0].properties['ip']).to be nil
     expect(loadbalancers[0].properties['dhcp']).to be true
   end
@@ -188,7 +196,7 @@ describe ProfitBricks::Datacenter do
 
     expect(loadbalancer.type).to eq('loadbalancer')
     expect(loadbalancer.id).to be_kind_of(String)
-    expect(loadbalancer.properties['name']).to eq('My LB')
+    expect(loadbalancer.properties['name']).to eq('Ruby SDK Test')
     expect(loadbalancer.properties['ip']).to be nil
     expect(loadbalancer.properties['dhcp']).to be true
   end
@@ -199,7 +207,7 @@ describe ProfitBricks::Datacenter do
 
     expect(loadbalancer.type).to eq('loadbalancer')
     expect(loadbalancer.id).to be_kind_of(String)
-    expect(loadbalancer.properties['name']).to eq('My LB')
+    expect(loadbalancer.properties['name']).to eq('Ruby SDK Test')
     expect(loadbalancer.properties['ip']).to be nil
     expect(loadbalancer.properties['dhcp']).to be true
   end
@@ -209,7 +217,7 @@ describe ProfitBricks::Datacenter do
 
     expect(lans[0].type).to eq('lan')
     expect(lans[0].id).to match(/^\d+$/)
-    expect(lans[0].properties['name']).to eq('public Lan 4')
+    expect(lans[0].properties['name']).to eq('Ruby SDK Test')
     expect(lans[0].properties['public']).to be true
   end
 
@@ -218,7 +226,7 @@ describe ProfitBricks::Datacenter do
 
     expect(lan.type).to eq('lan')
     expect(lan.id).to match(/^\d+$/)
-    expect(lan.properties['name']).to eq('public Lan 4')
+    expect(lan.properties['name']).to eq('Ruby SDK Test')
     expect(lan.properties['public']).to be true
   end
 
@@ -227,7 +235,7 @@ describe ProfitBricks::Datacenter do
 
     expect(lan.type).to eq('lan')
     expect(lan.id).to match(/^\d+$/)
-    expect(lan.properties['name']).to eq('public Lan 4')
+    expect(lan.properties['name']).to eq('Ruby SDK Test')
     expect(lan.properties['public']).to be true
   end
 end

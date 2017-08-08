@@ -22,10 +22,16 @@ describe ProfitBricks::NIC do
   it '#create' do
     expect(@nic.type).to eq('nic')
     expect(@nic.id).to match(options[:uuid])
-    expect(@nic.properties['name']).to eq('nic1')
+    expect(@nic.properties['name']).to eq('Ruby SDK Test')
     expect(@nic.properties['ips']).to be_kind_of(Array)
     expect(@nic.properties['dhcp']).to be true
+    expect(@nic.properties['firewallActive']).to be true
     expect(@nic.properties['lan']).to eq(1)
+    expect(@nic.properties['nat']).to be false
+  end
+
+  it '#create failure' do
+    expect { ProfitBricks::NIC.create(@datacenter.id, @server.id, name: 'Ruby SDK Test') }.to raise_error(Excon::Error::UnprocessableEntity, /Attribute 'lan' is required/)
   end
 
   it '#list' do
@@ -34,7 +40,7 @@ describe ProfitBricks::NIC do
     expect(nics.count).to be > 0
     expect(nics[0].type).to eq('nic')
     expect(nics[0].id).to eq(@nic.id)
-    expect(nics[0].properties['name']).to eq('nic1')
+    expect(nics[0].properties['name']).to eq('Ruby SDK Test')
     expect(nics[0].properties['ips']).to be_kind_of(Array)
     expect(nics[0].properties['dhcp']).to be true
     expect(nics[0].properties['lan']).to eq(1)
@@ -45,18 +51,24 @@ describe ProfitBricks::NIC do
 
     expect(nic.type).to eq('nic')
     expect(nic.id).to eq(@nic.id)
-    expect(nic.properties['name']).to eq('nic1')
+    expect(nic.properties['name']).to eq('Ruby SDK Test')
     expect(nic.properties['ips']).to be_kind_of(Array)
     expect(nic.properties['dhcp']).to be true
     expect(nic.properties['lan']).to eq(1)
+    expect(nic.properties['firewallActive']).to be true
+    expect(nic.properties['nat']).to be false
+  end
+
+  it '#get failure' do
+      expect { ProfitBricks::NIC.get(@datacenter.id, @server.id, options[:bad_id]) }.to raise_error(Excon::Error::NotFound, /Resource does not exist/)
   end
 
   it '#update' do
-    nic = @nic.update(ips: ['10.1.1.1', '10.1.1.2'])
+    nic = @nic.update(name: 'Ruby SDK Test - RENAME')
 
     expect(nic.type).to eq('nic')
     expect(nic.id).to eq(@nic.id)
-    expect(nic.properties['name']).to eq('nic1')
+    expect(nic.properties['name']).to eq('Ruby SDK Test - RENAME')
     expect(nic.properties['ips']).to be_kind_of(Array)
     expect(nic.properties['dhcp']).to be true
     expect(nic.properties['lan']).to eq(1)
