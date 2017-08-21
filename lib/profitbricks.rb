@@ -22,4 +22,10 @@ module ProfitBricks
   require 'profitbricks/location'
   require 'profitbricks/request'
   require 'profitbricks/wait_for'
+  require 'profitbricks/contract'
+  require 'profitbricks/group'
+  require 'profitbricks/user'
+  require 'profitbricks/share'
+  require 'profitbricks/resource'
+  require 'profitbricks/usermanagement'
 end

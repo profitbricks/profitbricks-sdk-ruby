@@ -16,6 +16,7 @@ describe ProfitBricks::Server do
     @volume.attach(@server.id)
 
     @image = get_test_image('CDROM')
+
     @server.attach_cdrom(@image.id)
     @server.wait_for { ready? }
 
@@ -37,11 +38,16 @@ describe ProfitBricks::Server do
   it '#create' do
     expect(@server.type).to eq('server')
     expect(@server.id).to match(options[:uuid])
-    expect(@server.properties['name']).to eq('New Server')
+    expect(@server.properties['name']).to eq('Ruby SDK Test')
     expect(@server.properties['cores']).to eq(1)
     expect(@server.properties['ram']).to eq(1024)
-    expect(@server.properties['availabilityZone']).to eq('AUTO')
+    expect(@server.properties['availabilityZone']).to eq('ZONE_1')
     expect(@server.properties['vmState']).to eq('SHUTOFF').or eq('RUNNING')
+    expect(@server.properties['cpuFamily']).to eq('INTEL_XEON')
+  end
+
+  it '#create failure' do
+   expect { ProfitBricks::Server.create(@datacenter.id, options[:bad_server]) }.to raise_error(Excon::Error::UnprocessableEntity)
   end
 
   it '#create composite' do
@@ -49,10 +55,10 @@ describe ProfitBricks::Server do
     @composite_server.reload
     expect(@composite_server.type).to eq('server')
     expect(@composite_server.id).to match(options[:uuid])
-    expect(@composite_server.properties['name']).to eq('New Composite Server')
+    expect(@composite_server.properties['name']).to eq('Ruby SDK Test Composite')
     expect(@composite_server.properties['cores']).to eq(1)
     expect(@composite_server.properties['ram']).to eq(1024)
-    expect(@composite_server.properties['availabilityZone']).to eq('AUTO')
+    expect(@composite_server.properties['availabilityZone']).to eq('ZONE_1')
     expect(@composite_server.properties['vmState']).to eq('RUNNING')
     expect(@composite_server.entities['volumes']['items'].count).to be > 0
     expect(@composite_server.entities['nics']['items'].count).to be > 0
@@ -67,7 +73,7 @@ describe ProfitBricks::Server do
     # expect(servers[0].properties['name']).to eq('New Server')
     expect(servers[0].properties['cores']).to eq(1)
     expect(servers[0].properties['ram']).to eq(1024)
-    expect(servers[0].properties['availabilityZone']).to eq('AUTO')
+    expect(servers[0].properties['availabilityZone']).to eq('ZONE_1')
     expect(servers[0].properties['vmState']).to eq('RUNNING')
     expect(servers[0].properties['bootVolume']['type']).to eq('volume')
     expect(servers[0].properties['bootVolume']['id']).to match(options[:uuid])
@@ -79,27 +85,32 @@ describe ProfitBricks::Server do
 
     expect(server.type).to eq('server')
     expect(server.id).to eq(@server.id)
-    expect(server.properties['name']).to eq('New Server')
+    expect(server.properties['name']).to eq('Ruby SDK Test')
     expect(server.properties['cores']).to eq(1)
     expect(server.properties['ram']).to eq(1024)
-    expect(server.properties['availabilityZone']).to eq('AUTO')
+    expect(server.properties['availabilityZone']).to eq('ZONE_1')
     expect(server.properties['vmState']).to eq('RUNNING')
     expect(server.properties['bootVolume']['type']).to eq('volume')
     expect(server.properties['bootVolume']['id']).to match(options[:uuid])
+    expect(server.properties['bootVolume']['id']).to eq(@volume.id)
     expect(server.properties['bootCdrom']).to be nil
+    expect(server.properties['cpuFamily']).to eq('INTEL_XEON')
+  end
+
+  it '#get failure' do
+    expect { ProfitBricks::Server.get(@datacenter.id,options[:bad_id]) }.to raise_error(Excon::Error::NotFound)
   end
 
   it '#update' do
     server = @server.update(
-        name: 'New Server - Updated',
-        cores: 2
+        name: 'Ruby SDK Test RENAME',
     )
 
     expect(server.id).to eq(@server.id)
-    expect(server.properties['name']).to eq('New Server - Updated')
-    expect(server.properties['cores']).to eq(2)
+    expect(server.properties['name']).to eq('Ruby SDK Test RENAME')
+    expect(server.properties['cores']).to eq(1)
     expect(server.properties['ram']).to eq(1024)
-    expect(server.properties['availabilityZone']).to eq('AUTO')
+    expect(server.properties['availabilityZone']).to eq('ZONE_1')
     expect(server.properties['vmState']).to eq('RUNNING')
     expect(server.properties['bootVolume']['type']).to eq('volume')
     expect(server.properties['bootVolume']['id']).to match(options[:uuid])
@@ -128,7 +139,7 @@ describe ProfitBricks::Server do
 
     expect(volumes.count).to be > 0
     expect(volumes[0].type).to eq('volume')
-    expect(volumes[0].properties['name']).to eq('my boot volume for server 1')
+    expect(volumes[0].properties['name']).to eq('Ruby SDK Test')
     expect(volumes[0].properties['size']).to be_kind_of(Integer)
     expect(volumes[0].properties['bus']).to eq('VIRTIO')
   end
@@ -137,8 +148,11 @@ describe ProfitBricks::Server do
     volume = @server.get_volume(@volume.id)
 
     expect(volume.type).to eq('volume')
-    expect(volume.properties['name']).to eq('my boot volume for server 1')
+    expect(volume.properties['name']).to eq('Ruby SDK Test')
     expect(volume.properties['size']).to be_kind_of(Integer)
+    expect(volume.properties['size']).to eq(2)
+    expect(volume.properties['type']).to eq('HDD')
+    expect(volume.properties['licenceType']).to eq('UNKNOWN')
     expect(volume.properties['bus']).to eq('VIRTIO')
   end
 
@@ -146,8 +160,11 @@ describe ProfitBricks::Server do
     volume = @server.attach_volume(@volume.id)
 
     expect(volume.type).to eq('volume')
-    expect(volume.properties['name']).to eq('my boot volume for server 1')
+    expect(volume.properties['name']).to eq('Ruby SDK Test')
     expect(volume.properties['size']).to be_kind_of(Integer)
+    expect(volume.properties['size']).to eq(2)
+    expect(volume.properties['type']).to eq('HDD')
+    expect(volume.properties['licenceType']).to eq('UNKNOWN')
     expect(volume.properties['bus']).to eq('VIRTIO')
   end
 
@@ -201,7 +218,7 @@ describe ProfitBricks::Server do
   it '#create_nic' do
     expect(@nic.type).to eq('nic')
     expect(@nic.id).to match(options[:uuid])
-    expect(@nic.properties['name']).to eq('nic1')
+    expect(@nic.properties['name']).to eq('Ruby SDK Test')
     expect(@nic.properties['ips']).to be_kind_of(Array)
     expect(@nic.properties['dhcp']).to be true
     expect(@nic.properties['lan']).to eq(1)
@@ -213,7 +230,7 @@ describe ProfitBricks::Server do
     expect(nics.count).to be > 0
     expect(nics[0].type).to eq('nic')
     expect(nics[0].id).to match(options[:uuid])
-    expect(nics[0].properties['name']).to eq('nic1')
+    expect(nics[0].properties['name']).to eq('Ruby SDK Test')
     expect(nics[0].properties['ips']).to be_kind_of(Array)
     expect(nics[0].properties['dhcp']).to be true
     expect(nics[0].properties['lan']).to eq(1)
@@ -224,7 +241,7 @@ describe ProfitBricks::Server do
 
     expect(nic.type).to eq('nic')
     expect(nic.id).to match(options[:uuid])
-    expect(nic.properties['name']).to eq('nic1')
+    expect(nic.properties['name']).to eq('Ruby SDK Test')
     expect(nic.properties['ips']).to be_kind_of(Array)
     expect(nic.properties['dhcp']).to be true
     expect(nic.properties['lan']).to eq(1)

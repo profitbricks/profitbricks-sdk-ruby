@@ -19,8 +19,8 @@ describe ProfitBricks::Snapshot do
   it '#create' do
     expect(@snapshot.type).to eq('snapshot')
     expect(@snapshot.id).to match(options[:uuid])
-    expect(@snapshot.properties['name']).to eq('Snapshot of storage X on 12.12.12 12:12:12 - updated')
-    expect(@snapshot.properties['description']).to eq('description of a snapshot - updated')
+    expect(@snapshot.properties['name']).to eq('Ruby SDK Test')
+    expect(@snapshot.properties['description']).to eq('Ruby SDK test snapshot')
     expect(@snapshot.properties['location']).to match(/\w+\/\w+/)
     expect(@snapshot.properties['size']).to be nil
     expect(@snapshot.properties['cpuHotPlug']).to be false
@@ -35,6 +35,10 @@ describe ProfitBricks::Snapshot do
     expect(@snapshot.properties['discScsiHotUnplug']).to be false
     expect(@snapshot.properties['licenceType']).to be nil
   end
+
+  # it '#create failure' do
+  #  expect { ProfitBricks::Snapshot.create(@datacenter.id, @volume.id, description: 'Ruby SDK test snapshot - RENAME') }.to raise_error(Excon::Error::UnprocessableEntity, /Attribute 'name' is required/)
+  # end
 
   it '#list' do
     snapshots = ProfitBricks::Snapshot.list
@@ -64,6 +68,7 @@ describe ProfitBricks::Snapshot do
 
     expect(snapshot.type).to eq('snapshot')
     expect(snapshot.id).to eq(@snapshot.id)
+    expect(snapshot.properties['location']).to eq('us/las')
     expect(snapshot.properties['name']).to be_kind_of(String)
     expect(snapshot.properties['description']).to be_kind_of(String)
     expect(snapshot.properties['location']).to match(/\w+\/\w+/)
@@ -79,15 +84,33 @@ describe ProfitBricks::Snapshot do
     expect(snapshot.properties['discScsiHotPlug']).to be false
     expect(snapshot.properties['discScsiHotUnplug']).to be false
     expect(snapshot.properties['licenceType']).to eq('UNKNOWN')
+
+    expect(snapshot.properties['size']).to eq(@volume.properties['size'])
+    expect(snapshot.properties['cpuHotPlug']).to eq(@volume.properties['cpuHotPlug'])
+    expect(snapshot.properties['cpuHotUnplug']).to eq(@volume.properties['cpuHotUnplug'])
+    expect(snapshot.properties['ramHotPlug']).to eq(@volume.properties['ramHotPlug'])
+    expect(snapshot.properties['ramHotUnplug']).to eq(@volume.properties['ramHotUnplug'])
+    expect(snapshot.properties['nicHotPlug']).to eq(@volume.properties['nicHotPlug'])
+    expect(snapshot.properties['nicHotUnplug']).to eq(@volume.properties['nicHotUnplug'])
+    expect(snapshot.properties['discVirtioHotPlug']).to eq(@volume.properties['discVirtioHotPlug'])
+    expect(snapshot.properties['discVirtioHotUnplug']).to eq(@volume.properties['discVirtioHotUnplug'])
+    expect(snapshot.properties['discScsiHotPlug']).to eq(@volume.properties['discScsiHotPlug'])
+    expect(snapshot.properties['discScsiHotUnplug']).to eq(@volume.properties['discScsiHotUnplug'])
+    expect(snapshot.properties['licenceType']).to eq(@volume.properties['licenceType'])
+  end
+
+  it '#get failure' do
+    expect { ProfitBricks::Snapshot.get(options[:bad_id]) }.to raise_error(Excon::Error::NotFound, /Resource does not exist/)
   end
 
   it '#update' do
-    snapshot = @snapshot.update(name: 'New name')
+    snapshot = @snapshot.update({ name: 'Ruby SDK Test - RENAME', description: 'Ruby SDK test snapshot - RENAME' })
     snapshot.wait_for { ready? }
 
     expect(snapshot.type).to eq('snapshot')
     expect(snapshot.id).to match(options[:uuid])
-    expect(snapshot.properties['name']).to eq('New name')
+    expect(snapshot.properties['name']).to eq('Ruby SDK Test - RENAME')
+    expect(snapshot.properties['description']).to eq('Ruby SDK test snapshot - RENAME')
     expect(snapshot.properties['description']).to be_kind_of(String)
     expect(snapshot.properties['location']).to match(/\w+\/\w+/)
     expect(snapshot.properties['size']).to be_kind_of(Integer)
