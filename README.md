@@ -1,6 +1,6 @@
 # SDK for Ruby
 
-Version: **profitbricks-sdk-ruby v4.0.0**
+Version: **profitbricks-sdk-ruby v4.0.1**
 
 ## Table of Contents
 
@@ -158,7 +158,7 @@ Connecting to ProfitBricks is handled by first setting up your authentication cr
 To setup your credentials you will have to provide configure and provide your username and password
 
     ProfitBricks.configure do |config|
-      config.url = 'https://api.profitbricks.com/cloudapi/v3/'
+      config.url = 'https://api.profitbricks.com/cloudapi/v4/'
       config.username = ENV['PROFITBRICKS_USERNAME']
       config.password = ENV['PROFITBRICKS_PASSWORD']
       config.debug = false
