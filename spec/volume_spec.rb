@@ -8,6 +8,9 @@ describe ProfitBricks::Volume do
     @server = ProfitBricks::Server.create(@datacenter.id, options[:server])
     @server.wait_for { ready? }
 
+    @volume_with_alias = ProfitBricks::Volume.create(@datacenter.id,options[:volume_with_alias])
+    @volume_with_alias.wait_for { ready? }
+
     @volume = ProfitBricks::Volume.create(@datacenter.id, options[:volume])
     @volume.wait_for { ready? }
 
@@ -23,16 +26,29 @@ describe ProfitBricks::Volume do
   end
 
   it '#create failure' do
-    expect { ProfitBricks::Volume.create(@datacenter.id, options[:bad_volume]) }.to raise_error
+    expect { ProfitBricks::Volume.create(@datacenter.id, name: 'Ruby SDK Test') }.to raise_error(Excon::Error::UnprocessableEntity, /Attribute 'size' is required/)
   end
 
   it '#create' do
     expect(@volume.type).to eq('volume')
     expect(@volume.id).to match(options[:uuid])
-    expect(@volume.properties['name']).to eq('my boot volume for server 1')
+    expect(@volume.properties['name']).to eq('Ruby SDK Test')
     expect(@volume.properties['size']).to be_kind_of(Integer)
-    expect(@volume.properties['bus']).to be nil
-    expect(@volume.properties['type']).to eq('HDD') 
+    expect(@volume.properties['bus']).to eq('VIRTIO')
+    expect(@volume.properties['size']).to eq(2)
+    expect(@volume.properties['type']).to eq('HDD')
+    expect(@volume.properties['licenceType']).to eq('UNKNOWN')
+    expect(@volume.properties['availabilityZone']).to eq('ZONE_3')
+    #expect(@volume.properties['sshKeys']).to be_kind_of(Array)
+  end
+
+  it '#create image alias' do
+    expect(@volume_with_alias.type).to eq('volume')
+    expect(@volume_with_alias.properties['name']).to eq('volume created with alias')
+    expect(@volume_with_alias.properties['size']).to be_kind_of(Integer)
+    expect(@volume_with_alias.properties['bus']).to be nil
+    expect(@volume_with_alias.properties['type']).to eq('HDD')
+    expect(@volume_with_alias.properties['imagePassword']).to eq('Vol44lias')
   end
 
   it '#list' do
@@ -41,7 +57,7 @@ describe ProfitBricks::Volume do
     expect(volumes.count).to be > 0
     expect(volumes[0].type).to eq('volume')
     expect(volumes[0].id).to eq(@volume.id)
-    expect(volumes[0].properties['name']).to eq('my boot volume for server 1')
+    expect(volumes[0].properties['name']).to eq('Ruby SDK Test')
     expect(volumes[0].properties['size']).to be_kind_of(Integer)
     expect(volumes[0].properties['bus']).to eq('VIRTIO')
     expect(volumes[0].properties['type']).to eq('HDD')
@@ -52,24 +68,33 @@ describe ProfitBricks::Volume do
 
     expect(volume.type).to eq('volume')
     expect(volume.id).to eq(@volume.id)
-    expect(volume.properties['name']).to eq('my boot volume for server 1')
+    expect(volume.properties['name']).to eq('Ruby SDK Test')
     expect(volume.properties['size']).to be_kind_of(Integer)
+    expect(volume.properties['size']).to eq(2)
     expect(volume.properties['bus']).to eq('VIRTIO')
     expect(volume.properties['type']).to eq('HDD')
+    expect(volume.properties['licenceType']).to eq('UNKNOWN')
+    expect(volume.properties['availabilityZone']).to eq('ZONE_3')
+    #expect(volume.properties['sshKeys']).to be_kind_of(Array)
+  end
+
+  it '#get failure' do
+      expect { ProfitBricks::Volume.get(@datacenter.id,options[:bad_id]) }.to raise_error(Excon::Error::NotFound, /Resource does not exist/)
   end
 
   it '#update' do
     volume = @volume.update(
-      name: 'Resized storage to 15 GB',
-      size: 15
+      name: 'Ruby SDK Test - RENAME',
+      size: 5
     )
 
     expect(volume.type).to eq('volume')
     expect(volume.id).to eq(@volume.id)
-    expect(volume.properties['name']).to eq('Resized storage to 15 GB')
+    expect(volume.properties['name']).to eq('Ruby SDK Test - RENAME')
     expect(volume.properties['size']).to be_kind_of(Integer)
     expect(volume.properties['bus']).to eq('VIRTIO')
     expect(volume.properties['type']).to eq('HDD')
+    expect(volume.properties['size']).to eq(5)
   end
 
   it '#delete' do
@@ -96,11 +121,11 @@ describe ProfitBricks::Volume do
     expect(volume).to be_kind_of(Hash)
   end
 
-  it '#create_snapshop' do
+  it '#create_snapshot' do
     # Confirm snapshot has been created.
     expect(@snapshot.type).to eq('snapshot')
-    expect(@snapshot.properties['name']).to eq('Snapshot of storage X on 12.12.12 12:12:12 - updated')
-    expect(@snapshot.properties['description']).to eq('description of a snapshot - updated')
+    expect(@snapshot.properties['name']).to eq('Ruby SDK Test')
+    expect(@snapshot.properties['description']).to eq('Ruby SDK test snapshot')
   end
 
   it '#restore_snapshot' do

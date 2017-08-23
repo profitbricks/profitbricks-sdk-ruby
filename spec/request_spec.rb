@@ -28,10 +28,15 @@ describe ProfitBricks::Request do
     expect(request.properties['method']).to eq('POST')
   end
 
+  it '#get failure' do
+     expect { ProfitBricks::Request.get(options[:bad_id]) }.to raise_error(Excon::Error::NotFound, /Resource does not exist/)
+  end
+
   it '#status' do
     status = @request.status
 
     expect(status.type).to eq('request-status')
+    expect(status.id).to eq("#{@request.id}/status")
     expect(status.metadata['status']).to eq('DONE')
   end
 end

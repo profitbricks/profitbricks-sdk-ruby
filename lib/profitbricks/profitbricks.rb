@@ -9,21 +9,20 @@ module ProfitBricks
     ProfitBricks::Config.debug = false
     ProfitBricks::Config.protocol = 'https'
     ProfitBricks::Config.port = '443'
-    ProfitBricks::Config.path_prefix = 'cloudapi/v3'
+    ProfitBricks::Config.path_prefix = 'cloudapi/v4'
     yield ProfitBricks::Config
 
     if ProfitBricks::Config.host
       url = construct_url
     else
-      url = ProfitBricks::Config.url || 'https://api.profitbricks.com/cloudapi/v3'
+      url = ProfitBricks::Config.url || 'https://api.profitbricks.com/cloudapi/v4'
     end
 
     params = {
       user: ProfitBricks::Config.username,
       password: ProfitBricks::Config.password,
       debug: ProfitBricks::Config.debug,
-      omit_default_port: true,
-      query: { depth: ProfitBricks::Config.depth }
+      omit_default_port: true
     }
 
     @client = Excon.new(url, params)
@@ -49,12 +48,15 @@ module ProfitBricks
   def self.request(params)
     begin
       params = add_headers(params)
+      ProfitBricks.client.params[:query] = append_query(params)
       response = ProfitBricks.client.request(prepend_path_prefix(params))
     rescue Excon::Errors::Unauthorized => error
       raise error, parse_json(error.response.body)['messages']
     rescue Excon::Errors::HTTPStatusError => error
       raise error, parse_json(error.response.body)['messages']
     rescue Excon::Errors::InternalServerError => error
+      raise error, parse_json(error.response.body)['messages']
+    rescue Excon::Error::Forbidden => error
       raise error, parse_json(error.response.body)['messages']
     end
     add_request_id(response)
@@ -114,6 +116,11 @@ module ProfitBricks
     params[:path] = params[:path].sub(/^\//, '')
     params[:path] = "#{path_prefix}/#{params[:path]}"
     params
+  end
+
+  def self.append_query(params)
+    params[:query] ||= {}
+    params[:query].merge!(depth: ProfitBricks::Config.depth) if !params[:query][:depth]
   end
 
   def self.construct_url

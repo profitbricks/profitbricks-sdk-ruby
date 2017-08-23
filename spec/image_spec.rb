@@ -21,9 +21,32 @@ describe ProfitBricks::Image do
     expect(image.type).to eq('image')
     expect(image.id).to match(options[:uuid])
     expect(image.properties['name']).to be_kind_of(String)
+    expect(image.properties['name']).not_to be nil
     expect(image.properties['description']).to be nil
     expect(image.properties['location']).to match(/\w+\/\w+/)
     expect(image.properties['size']).to be > 0
+
+    expect(image.properties['cpuHotPlug']).to eq(true).or(eq(false))
+    expect(image.properties['cpuHotUnplug']).to eq(true).or(eq(false))
+    expect(image.properties['ramHotPlug']).to eq(true).or(eq(false))
+    expect(image.properties['ramHotUnplug']).to eq(true).or(eq(false))
+    expect(image.properties['nicHotPlug']).to eq(true).or(eq(false))
+    expect(image.properties['nicHotUnplug']).to eq(true).or(eq(false))
+    expect(image.properties['discVirtioHotPlug']).to eq(true).or(eq(false))
+    expect(image.properties['discVirtioHotUnplug']).to eq(true).or(eq(false))
+    expect(image.properties['discScsiHotPlug']).to eq(true).or(eq(false))
+    expect(image.properties['discScsiHotUnplug']).to eq(true).or(eq(false))
+    expect(image.properties['public']).to eq(true).or(eq(false))
+
+    expect(image.properties['imageAliases']).to be_an_instance_of(Array)
+
+    expect(image.properties).to have_key("location")
+    expect(image.properties).to have_key("licenceType")
+    expect(image.properties).to have_key("imageType")
+  end
+
+  it '#get failure' do
+      expect { ProfitBricks::Image.get(options[:bad_id]) }.to raise_error(Excon::Error::NotFound, /Resource does not exist/)
   end
 
   # Unable to test in production due to public images.

@@ -1,12 +1,11 @@
 module ProfitBricks
   # Image class
   class Image < ProfitBricks::Model
-
     # Delete the image.
     def delete
       ProfitBricks.request(
         method: :delete,
-        path: "/images/#{self.id}",
+        path: "/images/#{id}",
         expects: 202
       )
     end
@@ -15,7 +14,7 @@ module ProfitBricks
     def update(options = {})
       response = ProfitBricks.request(
         method: :patch,
-        path: "/images/#{self.id}",
+        path: "/images/#{id}",
         expects: 202,
         body: options.to_json
       )
@@ -27,13 +26,14 @@ module ProfitBricks
     end
 
     class << self
-
       # List all images.
-      def list
+      def list(options = {})
+
         response = ProfitBricks.request(
           method: :get,
-          path: '/images',
-          expects: 200
+          path: '/images/',
+          expects: 200,
+          query: options
         )
         instantiate_objects(response)
       end

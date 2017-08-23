@@ -1,6 +1,6 @@
 # SDK for Ruby
 
-Version: **profitbricks-sdk-ruby v3.0.3**
+Version: **profitbricks-sdk-ruby v4.0.0**
 
 ## Table of Contents
 
@@ -37,7 +37,7 @@ Version: **profitbricks-sdk-ruby v3.0.3**
     * [Stop a Server](#stop-a-server)
   * [Images](#images)
     * [List Images](#list-images)
-    * [Get an Image](#get-an-image)
+    * [Get an Image](#get-an-image)    
     * [Update an Image](#update-an-image)
     * [Delete an Image](#delete-an-image)
   * [Volumes](#volumes)
@@ -85,6 +85,29 @@ Version: **profitbricks-sdk-ruby v3.0.3**
     * [Get a Load Balanced NIC](#get-a-load-balanced-nic)
     * [Associate NIC to a Load Balancer](#associate-nic-to-a-load-balancer)
     * [Remove a NIC Association](#remove-a-nic-association)
+  * [User Management](#user-management)
+    * [List Groups](#list-groups)
+    * [Get a Group](#get-a-group)
+    * [Create a Group](#create-a-group)
+    * [Update a Group](#update-a-group)
+    * [Delete a Group](#delete-a-group)
+    * [List Shares](#list-shares)
+    * [Get a Share](#get-a-share)
+    * [Add a Share](#add-a-share)
+    * [Update a Share](#update-a-share)
+    * [Delete a Share](#delete-a-share)
+    * [List Users](#list-users)
+    * [Get a User](#get-a-user)
+    * [Create a User](#create-a-user)
+    * [Update a User](#update-a-user)
+    * [Delete a User](#delete-a-user)
+    * [List Users in a Group](#list-users-in-a-group)
+    * [Add User to Group](#add-user-to-group)
+    * [Remove User from a Group](#remove-user-from-a-group)
+    * [List Resources](#list-resources)
+    * [Get a Resource](#get-a-resource)
+  * [Contract Resources](#contract-resources)
+    * [List Contract Resources](#list-contract-resources)
   * [Requests](#requests)
     * [List Requests](#list-requests)
     * [Get a Request](#get-a-request)
@@ -135,7 +158,7 @@ Connecting to ProfitBricks is handled by first setting up your authentication cr
 To setup your credentials you will have to provide configure and provide your username and password
 
     ProfitBricks.configure do |config|
-      config.url = 'https://api.profitbricks.com/cloudapi/v3/'
+      config.url = 'https://api.profitbricks.com/cloudapi/v4/'
       config.username = ENV['PROFITBRICKS_USERNAME']
       config.password = ENV['PROFITBRICKS_PASSWORD']
       config.debug = false
@@ -205,6 +228,7 @@ The following table outlines the locations currently supported:
 | Value| Country | City |
 |---|---|---|
 | us/las | United States | Las Vegas |
+| us/ewr | United States | Newark |
 | de/fra | Germany | Frankfurt |
 | de/fkb | Germany | Karlsruhe |
 
@@ -1014,7 +1038,7 @@ The following table describes the request arguments:
 
 | Name| Required | Type | Description |
 |---|:-:|---|---|
-| location | **yes** | string | This must be one of the locations: us/las, de/fra, de/fkb. |
+| location | **yes** | string | This must be one of the locations: us/las, us/ewr, de/fra, de/fkb. |
 | size | **yes** | int | The size of the IP block you want. |
 | name | no | string | A descriptive name for the IP block |
 
@@ -1023,6 +1047,7 @@ The following table outlines the locations currently supported:
 | Value| Country | City |
 |---|---|---|
 | us/las | United States | Las Vegas |
+| us/ewr | United States | Newark |
 | de/fra | Germany | Frankfurt |
 | de/fkb | Germany | Karlsruhe |
 
@@ -1586,6 +1611,440 @@ After retrieving a load balancer, either by getting it by id, or as a create res
 ```
 loadbalancer.remove_balanced_nic(nic.id)
 ```
+
+---
+
+### User Management
+
+#### List Groups
+
+Retrieves a list of all groups.
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| options | no| string | The options of the resource. |
+
+
+The following table describes the options arguments:
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| depth | no | int | An integer value of 0 - 5 that affects the amount of detail returned. |
+
+    groups = ProfitBricks::Group.list()
+
+---
+
+#### Get a Group
+
+Retrieves the attributes of a given group.
+
+The following table describes the request arguments:
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| group_id | **yes** | string | The ID of the group. |
+| options | no | string | The options of the resource. |
+
+
+The following table describes the options arguments:
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| depth | no | int | An integer value of 0 - 5 that affects the amount of detail returned. |
+
+    response = ProfitBricks::Group.get(group_id)
+
+---
+
+#### Create a Group
+
+Creates a new group and set group privileges.
+
+The following table describes the request arguments:
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| name | **yes** | string | The ID of the group. |
+| create_datacenter | no | bool | Indicates if the group is allowed to create virtual data centers. |
+| create_snapshot | no | bool | Indicates if the group is allowed to create snapshots. |
+| reserve_ip | no | bool | Indicates if the group is allowed to reserve IP addresses. |
+| access_activity_log | no | bool | Indicates if the group is allowed to access activity log. |
+
+  group = {
+            name: 'my group',
+            create_datacenter: 'true',
+            create_snapshot: 'true',
+            reserve_ip: 'true',
+            access_activity_log: 'true'
+          }
+
+  response = ProfitBricks::Group.create(group)
+
+---
+
+#### Update a Group
+
+Updates a group's name or privileges.
+
+The following table describes the request arguments:
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| group_id | **yes** | string | The ID of the group. |
+| name | **yes** | string | The ID of the group. |
+| create_datacenter | no | bool | Indicates if the group is allowed to create virtual data centers. |
+| create_snapshot | no | bool | Indicates if the group is allowed to create snapshots. |
+| reserve_ip | no | bool | Indicates if the group is allowed to reserve IP addresses. |
+| access_activity_log | no | bool | Indicates if the group is allowed to access activity log. |
+
+    group = ProfitBricks::Group.get(group_id)
+    group = group.update(
+    name: 'my group RENAME',
+    create_datacenter: false
+    )
+
+---
+
+#### Delete a Group
+
+Deletes the specified group.
+
+The following table describes the request arguments:
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| group_id | **yes** | string | The ID of the group. |
+    group = ProfitBricks::Group.get(group_id)
+    response = group.delete
+
+---
+
+#### List Shares
+
+Retrieves a list of all shares though a group.
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| group_id | **yes** | string | The ID of the group. |
+| options | no | string | The options of the resource. |
+
+The following table describes the options arguments:
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| depth | no | int | An integer value of 0 - 5 that affects the amount of detail returned. |
+
+    response = ProfitBricks::Share.list(group_id)
+
+---
+
+#### Get a Share
+
+Retrieves a specific resource share available to a group.
+
+The following table describes the request arguments:
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| group_id | **yes** | string | The ID of the group. |
+| resource_id | **yes** | string | The ID of the resource. |
+| options | no | string | The options of the resource. |
+
+
+The following table describes the options arguments:
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| depth | no | int | An integer value of 0 - 5 that affects the amount of detail returned. |
+
+    response = ProfitBricks::Share.get(
+        group_id,
+        resource_id)
+
+---
+
+#### Add a Share
+
+Shares a resource through a group.
+
+The following table describes the request arguments:
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| group_id | **yes** | string | The ID of the group. |
+| resource_id | **yes** | string | The ID of the resource. |
+| edit_privilege | no | string | Indicates that the group has permission to edit privileges on the resource. |
+| share_privilege | no | string | Indicates that the group has permission to share the resource. |
+
+    share = {
+              edit_privilege: 'true',
+              share_privilege: 'true',
+              resource_id = datacenter_id
+            }
+    response = ProfitBricks::Share.create(group_id,share)
+
+---
+
+#### Update a Share
+
+Updates the permissions of a group for a resource share.
+
+The following table describes the request arguments:
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| group_id | **yes** | string | The ID of the group. |
+| resource_id | **yes** | string | The ID of the resource. |
+| options | no | string | The options of the resource. |
+
+
+The following table describes the options arguments:
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| edit_privilege | no | string | Indicates that the group has permission to edit privileges on the resource. |
+| share_privilege | no | string | Indicates that the group has permission to share the resource. |
+
+    share = ProfitBricks::Share.update(group_id,datacenter_id,{
+      edit_privilege: false
+    })
+
+---
+
+#### Delete a Share
+
+Removes a resource share from a group.
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| group_id | **yes** | string | The ID of the group. |
+| resource_id | **yes** | string | The ID of the resource. |
+
+    ProfitBricks::Share.delete(group_id,datacenter_id)
+
+---
+
+#### List Users
+
+Retrieves a list of all users.
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| options | no | string | The options of the resource. |
+
+
+The following table describes the options arguments:
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| group_id | no | string | The ID of the group. |
+| depth | no | int | An integer value of 0 - 5 that affects the amount of detail returned. |
+
+    response =  ProfitBricks::User.list()
+
+---
+
+#### Get a User
+
+Retrieves a single user.
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| user_id | **yes** | string | The ID of the user. |
+| options | no | string | The options of the resource. |
+
+
+The following table describes the options arguments:
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| depth | no | int | An integer value of 0 - 5 that affects the amount of detail returned. |
+
+    response = ProfitBricks::User.get(user_id)
+
+---
+
+#### Create a User
+
+Creates a new user.
+
+The following table describes the request arguments:
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| firstname | **yes** | string | A name for the user. |
+| lastname | **yes**  | bool | A name for the user. |
+| email | **yes**  | bool | An e-mail address for the user. |
+| password | **yes**  | bool | A password for the user. |
+| administrator | no | bool | Assigns the user have administrative rights. |
+| force_sec_auth | no | bool | Indicates if secure (two-factor) authentication should be forced for the user. |
+
+    user = {
+            firstname: 'John',
+            lastname: 'Doe',
+            email: 'no-reply@example.com',
+            password: 'secretpassword123',
+            administrator: 'administrator',
+            force_sec_auth: false
+          }
+
+    response = ProfitBricks::User.create(user)
+
+---
+
+#### Update a User
+
+Updates an existing user.
+
+The following table describes the request arguments:
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| user_id | **yes** | string | The ID of the user. |
+| firstname | **yes** | string | A name for the user. |
+| lastname | **yes**  | bool | A name for the user. |
+| email | **yes**  | bool | An e-mail address for the user. |
+| administrator | **yes** | bool | Assigns the user have administrative rights. |
+| force_sec_auth | **yes** | bool | Indicates if secure (two-factor) authentication should be forced for the user. |
+
+    user = ProfitBricks::User.get(user_id)
+    response = user.update(
+    administrator: false,
+    firstname: 'John',
+    lastname: 'Doe',
+    email: 'no-reply@example.com',
+    force_sec_auth: false
+    )
+
+---
+
+#### Delete a User
+
+Removes a user.
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| user_id | **yes** | string | The ID of the user. |
+
+    user = ProfitBricks::User.get(user_id)
+    response = user.delete
+
+---
+
+#### List Users in a Group
+
+Retrieves a list of all users that are members of a particular group.
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| options | no | string | The options of the resource. |
+
+
+The following table describes the options arguments:
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| group_id | no| string | The ID of the group. |
+| depth | no | int | An integer value of 0 - 5 that affects the amount of detail returned. |
+
+    response = ProfitBricks::User.list(group_id: 'UUID')
+
+---
+
+#### Add User to Group
+
+Adds an existing user to a group.
+
+The following table describes the request arguments:
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| group_id | **yes** | string | The ID of the group. |
+| user_id | **yes** | string | The ID of the user. |
+
+    response = user = ProfitBricks::User.add_to_group(group_id,user_id)
+
+---
+
+#### Remove User from a Group
+
+Removes a user from a group.
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| group_id | **yes** | string | The ID of the group. |
+| user_id | **yes** | string | The ID of the user. |
+
+    response = ProfitBricks::User.remove_from_group(group_id,user_id)
+
+---
+
+#### List Resources
+
+Retrieves a list of all resources. Alternatively, Retrieves all resources of a particular type.
+
+The following table describes the request arguments:
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| resource_type | no | string | The resource type: `datacenter`, `image`, `snapshot` or `ipblock`. |
+| options | no | string | The options of the resource. |
+
+
+The following table describes the options arguments:
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| depth | no | int | An integer value of 0 - 5 that affects the amount of detail returned. |
+
+    response = ProfitBricks::Resource.list
+
+    response = ProfitBricks::Resource.list_by_type('datacenter')
+
+---
+
+#### Get a Resource
+
+Retrieves a single resource of a particular type.
+
+The following table describes the request arguments:
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| resource_type | **yes** | string | The resource type: `datacenter`, `image`, `snapshot` or `ipblock`. |
+| resource_id | **yes** | string | The ID of the resource. |
+| options | no | string | The options of the resource. |
+
+
+The following table describes the options arguments:
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| depth | no | int | An integer value of 0 - 5 that affects the amount of detail returned. |
+
+    response = ProfitBricks::Resource.get('datacenter', datacenter_id)
+
+---
+
+### Contract Resources
+
+#### List Contract Resources
+
+Retrieves information about the resource limits for a particular contract and the current resource usage.
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| options | no | string | The options of the resource. |
+
+
+The following table describes the options arguments:
+
+| Name | Required | Type | Description |
+|---|:-:|---|---|
+| depth | no | int | An integer value of 0 - 5 that affects the amount of detail returned. |
+
+    response = ProfitBricks::Contract.get
 
 ---
 
