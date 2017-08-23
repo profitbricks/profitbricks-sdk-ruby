@@ -33,6 +33,10 @@ describe ProfitBricks::Firewall do
     expect(@fwrule.properties['icmpCode']).to be nil
   end
 
+  it '#create failure' do
+    expect { ProfitBricks::Firewall.create(@datacenter.id, @server.id, @nic.id, { name: 'Ruby SDK Test' }) }.to raise_error(Excon::Error::UnprocessableEntity, /Attribute 'protocol' is required/)
+  end
+
   it '#list' do
     fwrules = ProfitBricks::Firewall.list(@datacenter.id, @server.id, @nic.id)
 
@@ -66,24 +70,28 @@ describe ProfitBricks::Firewall do
     expect(fwrule.properties['icmpCode']).to be nil
   end
 
+  it '#get failure' do
+      expect { ProfitBricks::Firewall.get(@datacenter.id, @server.id, @nic.id, options[:bad_id]) }.to raise_error(Excon::Error::NotFound, /Resource does not exist/)
+  end
+
   it '#update' do
     fwrule = @fwrule.update(
-      sourceMac: '01:98:22:22:44:22',
-      targetIp: '123.100.101.102'
+      name: 'SSH - RENAME'
     )
     fwrule.wait_for { ready? }
 
     expect(fwrule.type).to eq('firewall-rule')
     expect(fwrule.id).to eq(@fwrule.id)
-    expect(fwrule.properties['name']).to eq('SSH')
+    expect(fwrule.properties['name']).to eq('SSH - RENAME')
     expect(fwrule.properties['protocol']).to eq('TCP')
-    expect(fwrule.properties['sourceMac']).to eq('01:98:22:22:44:22')
+    expect(fwrule.properties['sourceMac']).to eq('01:23:45:67:89:00')
     expect(fwrule.properties['sourceIp']).to be nil
-    expect(fwrule.properties['targetIp']).to eq('123.100.101.102')
+    expect(fwrule.properties['targetIp']).to be nil
     expect(fwrule.properties['portRangeStart']).to eq(22)
     expect(fwrule.properties['portRangeEnd']).to eq(22)
     expect(fwrule.properties['icmpType']).to be nil
     expect(fwrule.properties['icmpCode']).to be nil
+    #expect(fwrule.properties['version']).to eq('1')
   end
 
   it '#delete' do

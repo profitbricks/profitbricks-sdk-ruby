@@ -9,7 +9,7 @@ RSpec.configure do |config|
 end
 
 ProfitBricks.configure do |config|
-  config.url = 'https://api.profitbricks.com/cloudapi/v3/'
+  config.url = 'https://api.profitbricks.com/cloudapi/v4/'
   config.username = ENV['PROFITBRICKS_USERNAME']
   config.password = ENV['PROFITBRICKS_PASSWORD']
   config.debug = false
