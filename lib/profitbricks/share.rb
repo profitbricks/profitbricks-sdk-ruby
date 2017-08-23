@@ -51,7 +51,7 @@ module ProfitBricks
       end
 
       # Retrieve a share under a group.
-      def get(group_id, share_id, options = {}))
+      def get(group_id, share_id, options = {})
         response = ProfitBricks.request(
           method: :get,
           path: "/um/groups/#{group_id}/shares/#{share_id}",

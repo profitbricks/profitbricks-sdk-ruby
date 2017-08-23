@@ -1,6 +1,6 @@
 # SDK for Ruby
 
-Version: **profitbricks-sdk-ruby v4.0.1**
+Version: **profitbricks-sdk-ruby v4.0.0**
 
 ## Table of Contents
 
