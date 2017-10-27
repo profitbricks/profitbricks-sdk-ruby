@@ -14,6 +14,7 @@ describe ProfitBricks::Snapshot do
 
   after(:all) do
     @datacenter.delete
+    @snapshot.delete
   end
 
   it '#create' do

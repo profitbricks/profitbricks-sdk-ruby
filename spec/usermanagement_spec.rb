@@ -9,9 +9,7 @@ describe ProfitBricks::UserManagement do
     @group = ProfitBricks::UserManagement.create_group(options[:group])
     @group.wait_for { ready? }
 
-    share = options[:share]
-    share[:resource_id] = @datacenter.id
-    @share = ProfitBricks::Share.create(@group.id,share)
+    @share = ProfitBricks::Share.create(@group.id, @datacenter.id, options[:share])
     @share.wait_for { ready? }
 
     @email = "no-reply#{Time.now.to_i}@example.com"
@@ -24,7 +22,7 @@ describe ProfitBricks::UserManagement do
   after(:all) do
     ProfitBricks::Share.delete(@group.id,@datacenter.id)
     @group.delete()
-    # @user.delete()
+    @user.delete()
     @datacenter.delete()
   end
 
@@ -36,10 +34,10 @@ describe ProfitBricks::UserManagement do
     expect(@group.id).to match(options[:uuid])
     expect(@group.type).to eq('group')
     expect(@group.properties['name']).to eq('Ruby SDK Test')
-    expect(@group.properties['createDataCenter']).to be false
-    expect(@group.properties['createSnapshot']).to be false
-    expect(@group.properties['reserveIp']).to be false
-    expect(@group.properties['accessActivityLog']).to be false
+    expect(@group.properties['createDataCenter']).to be true
+    expect(@group.properties['createSnapshot']).to be true
+    expect(@group.properties['reserveIp']).to be true
+    expect(@group.properties['accessActivityLog']).to be true
   end
 
   it '#list group' do
@@ -52,17 +50,17 @@ describe ProfitBricks::UserManagement do
     group = ProfitBricks::UserManagement.get_group(@group.id)
     expect(group.type).to eq('group')
     expect(group.properties['name']).to eq('Ruby SDK Test')
-    expect(group.properties['createDataCenter']).to be false
-    expect(group.properties['createSnapshot']).to be false
-    expect(group.properties['reserveIp']).to be false
-    expect(group.properties['accessActivityLog']).to be false
+    expect(group.properties['createDataCenter']).to be true
+    expect(group.properties['createSnapshot']).to be true
+    expect(group.properties['reserveIp']).to be true
+    expect(group.properties['accessActivityLog']).to be true
   end
 
   it '#create share' do
     expect(@share.id).to match(options[:uuid])
     expect(@share.type).to eq('resource')
-    # expect(@share.properties.editPrivilege).to be true
-    # expect(@share.properties.sharePrivilege).to be true
+    expect(@share.properties['editPrivilege']).to be true
+    expect(@share.properties['sharePrivilege']).to be true
   end
 
   it '#list share' do
@@ -76,8 +74,8 @@ describe ProfitBricks::UserManagement do
     share = ProfitBricks::UserManagement.get_share(@group.id,@share.id)
     expect(share.id).to match(options[:uuid])
     expect(share.type).to eq('resource')
-    # expect(share.properties.editPrivilege).to be true
-    # expect(share.properties.sharePrivilege).to be true
+    expect(share.properties['editPrivilege']).to be true
+    expect(share.properties['sharePrivilege']).to be true
   end
 
   it '#create user' do

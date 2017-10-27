@@ -191,26 +191,25 @@ module Helpers
         },
         group: {
           name: 'Ruby SDK Test',
-          #create_datacenter: 'true',
-          #create_snapshot: 'true',
-          #reserve_ip: 'true',
-          #access_activity_log: 'true'
+          createDataCenter: true,
+          createSnapshot: true,
+          reserveIp: true,
+          accessActivityLog: true
         },
         bad_group: {
-          #create_datacenter: 'true'
+          createDataCenter: true
         },
         share: {
-          resource_id: '',
-          edit_privilege: 'true',
-          share_privilege: 'true'
+          editPrivilege: true,
+          sharePrivilege: true
         },
         user: {
           firstname: 'John',
           lastname: 'Doe',
           email: 'no-reply@example.com',
           password: 'secretpassword123',
-          administrator: 'true',
-          # force_sec_auth: 'false'
+          administrator: true,
+          forceSecAuth: false
         },
         bad_user: {
           firstname: 'Jane',
