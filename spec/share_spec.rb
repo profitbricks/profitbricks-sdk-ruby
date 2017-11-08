@@ -9,9 +9,7 @@ describe ProfitBricks::Share do
     @group = ProfitBricks::Group.create(options[:group])
     @group.wait_for { ready? }
 
-    share = options[:share]
-    share[:resource_id] = @datacenter.id
-    @share = ProfitBricks::Share.create(@group.id,share)
+    @share = ProfitBricks::Share.create(@group.id, @datacenter.id, options[:share])
     @share.wait_for { ready? }
   end
 
@@ -21,15 +19,13 @@ describe ProfitBricks::Share do
   end
 
   it '#create failure' do
-    share = {}
-    share[:resource_id]= @datacenter.id
-   expect { ProfitBricks::Share.create(@group.id,share) }.to raise_error(Excon::Error::UnprocessableEntity)
+   expect { ProfitBricks::Share.create(@group.id, options[:bad_id], {}) }.to raise_error(Excon::Error::NotFound)
   end
 
   it '#create' do
     expect(@share.type).to eq('resource')
-    # expect(@share.properties[:editPrivilege]).to be true
-    # expect(@share.properties[:sharePrivilege]).to be true
+    expect(@share.properties['editPrivilege']).to be true
+    expect(@share.properties['sharePrivilege']).to be true
   end
 
   it '#list' do
@@ -43,21 +39,21 @@ describe ProfitBricks::Share do
     share = ProfitBricks::Share.get(@group.id,@datacenter.id)
     expect(share.id).to match(options[:uuid])
     expect(share.type).to eq('resource')
-    # expect(share.properties[:editPrivilege]).to be true
-    # expect(share.properties[:sharePrivilege]).to be true
+    expect(share.properties['editPrivilege']).to be true
+    expect(share.properties['sharePrivilege']).to be true
   end
 
   it '#get failure' do
-    expect { ProfitBricks::Share.get(@group.id,options[:bad_id]) }.to raise_error(Excon::Error::NotFound)
+    expect { ProfitBricks::Share.get(@group.id, options[:bad_id]) }.to raise_error(Excon::Error::NotFound)
   end
 
   it '#update' do
     share = ProfitBricks::Share.update(@group.id,@datacenter.id,{
-    edit_privilege: false
+      editPrivilege: false
     })
 
     expect(share.type).to eq('resource')
-    # expect(share.properties[:editPrivilege]).to be false
+    expect(share.properties['editPrivilege']).to be false
   end
 
   it '#delete' do

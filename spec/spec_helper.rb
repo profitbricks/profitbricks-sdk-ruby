@@ -13,6 +13,6 @@ ProfitBricks.configure do |config|
   config.username = ENV['PROFITBRICKS_USERNAME']
   config.password = ENV['PROFITBRICKS_PASSWORD']
   config.debug = false
-  config.timeout = 300
+  config.timeout = 600
   config.interval = 5
 end

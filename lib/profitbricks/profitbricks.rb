@@ -22,7 +22,8 @@ module ProfitBricks
       user: ProfitBricks::Config.username,
       password: ProfitBricks::Config.password,
       debug: ProfitBricks::Config.debug,
-      omit_default_port: true
+      omit_default_port: true,
+      connect_timeout: 360
     }
 
     @client = Excon.new(url, params)

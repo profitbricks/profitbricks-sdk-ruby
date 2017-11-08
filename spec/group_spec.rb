@@ -18,10 +18,10 @@ describe ProfitBricks::Group do
     expect(@group.id).to match(options[:uuid])
     expect(@group.type).to eq('group')
     expect(@group.properties['name']).to eq('Ruby SDK Test')
-    #expect(@group.properties.createDataCenter).to be true
-    #expect(@group.properties.createSnapshot).to be true
-    #expect(@group.properties.reserveIp).to be true
-    #expect(@group.properties.accessActivityLog).to be true
+    expect(@group.properties['createDataCenter']).to be true
+    expect(@group.properties['createSnapshot']).to be true
+    expect(@group.properties['reserveIp']).to be true
+    expect(@group.properties['accessActivityLog']).to be true
   end
 
   it '#list' do
@@ -35,10 +35,10 @@ describe ProfitBricks::Group do
     group = ProfitBricks::Group.get(@group.id)
     expect(@group.type).to eq('group')
     expect(@group.properties['name']).to eq('Ruby SDK Test')
-    #expect(@group.properties.createDataCenter).to be true
-    #expect(@group.properties.createSnapshot).to be true
-    #expect(@group.properties.reserveIp).to be true
-    #expect(@group.properties.accessActivityLog).to be true
+    expect(@group.properties['createDataCenter']).to be true
+    expect(@group.properties['createSnapshot']).to be true
+    expect(@group.properties['reserveIp']).to be true
+    expect(@group.properties['accessActivityLog']).to be true
   end
 
   it '#get failure' do
@@ -47,13 +47,13 @@ describe ProfitBricks::Group do
 
   it '#update' do
     group = @group.update(
-    name: 'Ruby SDK Test - RENAME',
-    #create_datacenter: false
+      name: 'Ruby SDK Test - RENAME',
+      createDataCenter: false
     )
 
     expect(@group.type).to eq('group')
     expect(@group.properties['name']).to eq('Ruby SDK Test - RENAME')
-    #expect(@group.properties.createDataCenter).to be false
+    expect(@group.properties['createDataCenter']).to be false
   end
 
   it '#delete' do

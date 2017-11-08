@@ -28,8 +28,8 @@ module ProfitBricks
     end
 
     # Create a new share.
-    def create_share(group_id, options = {})
-      ProfitBricks::Share.create(group_id, options)
+    def create_share(group_id, resource_id, options = {})
+      ProfitBricks::Share.create(group_id, resource_id, options)
     end
 
     # List all groups.
