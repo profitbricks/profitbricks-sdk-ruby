@@ -14,11 +14,11 @@ module ProfitBricks
       end
 
       # Update the share.
-      def update(group_id,resource_id ,options = {})
+      def update(group_id, resource_id, options = {})
         response = ProfitBricks.request(
           method: :put,
           path: "/um/groups/#{group_id}/shares/#{resource_id}",
-          expects: 200,
+          expects: 202,
           body: { properties: options }.to_json
         )
 
@@ -27,10 +27,10 @@ module ProfitBricks
       end
 
       # Create a new share.
-      def create(group_id, options = {})
+      def create(group_id, resource_id, options = {})
         response = ProfitBricks.request(
           method: :post,
-          path: "/um/groups/#{group_id}/shares/#{options[:resource_id]}",
+          path: "/um/groups/#{group_id}/shares/#{resource_id}",
           expects: 202,
           body: { properties: options}.to_json
         )

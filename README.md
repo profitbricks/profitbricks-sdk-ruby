@@ -1666,17 +1666,17 @@ The following table describes the request arguments:
 | Name | Required | Type | Description |
 |---|:-:|---|---|
 | name | **yes** | string | The ID of the group. |
-| create_datacenter | no | bool | Indicates if the group is allowed to create virtual data centers. |
-| create_snapshot | no | bool | Indicates if the group is allowed to create snapshots. |
-| reserve_ip | no | bool | Indicates if the group is allowed to reserve IP addresses. |
-| access_activity_log | no | bool | Indicates if the group is allowed to access activity log. |
+| createDataCenter | no | bool | Indicates if the group is allowed to create virtual data centers. |
+| createSnapshot | no | bool | Indicates if the group is allowed to create snapshots. |
+| reserveIp | no | bool | Indicates if the group is allowed to reserve IP addresses. |
+| accessActivityLog | no | bool | Indicates if the group is allowed to access activity log. |
 
   group = {
             name: 'my group',
-            create_datacenter: 'true',
-            create_snapshot: 'true',
-            reserve_ip: 'true',
-            access_activity_log: 'true'
+            createDataCenter: true,
+            createSnapshot: true,
+            reserveIp: true,
+            accessActivityLog: true
           }
 
   response = ProfitBricks::Group.create(group)
@@ -1693,15 +1693,15 @@ The following table describes the request arguments:
 |---|:-:|---|---|
 | group_id | **yes** | string | The ID of the group. |
 | name | **yes** | string | The ID of the group. |
-| create_datacenter | no | bool | Indicates if the group is allowed to create virtual data centers. |
-| create_snapshot | no | bool | Indicates if the group is allowed to create snapshots. |
-| reserve_ip | no | bool | Indicates if the group is allowed to reserve IP addresses. |
-| access_activity_log | no | bool | Indicates if the group is allowed to access activity log. |
+| createDataCenter | no | bool | Indicates if the group is allowed to create virtual data centers. |
+| createSnapshot | no | bool | Indicates if the group is allowed to create snapshots. |
+| reserveIp | no | bool | Indicates if the group is allowed to reserve IP addresses. |
+| accessActivityLog | no | bool | Indicates if the group is allowed to access activity log. |
 
     group = ProfitBricks::Group.get(group_id)
     group = group.update(
-    name: 'my group RENAME',
-    create_datacenter: false
+      name: 'my group RENAME',
+      createDataCenter: false
     )
 
 ---
@@ -1774,15 +1774,14 @@ The following table describes the request arguments:
 |---|:-:|---|---|
 | group_id | **yes** | string | The ID of the group. |
 | resource_id | **yes** | string | The ID of the resource. |
-| edit_privilege | no | string | Indicates that the group has permission to edit privileges on the resource. |
-| share_privilege | no | string | Indicates that the group has permission to share the resource. |
+| editPrivilege | no | string | Indicates that the group has permission to edit privileges on the resource. |
+| sharePrivilege | no | string | Indicates that the group has permission to share the resource. |
 
     share = {
-              edit_privilege: 'true',
-              share_privilege: 'true',
-              resource_id = datacenter_id
+              editPrivilege: true,
+              sharePrivilege: true
             }
-    response = ProfitBricks::Share.create(group_id,share)
+    response = ProfitBricks::Share.create(group_id, resource_id, share)
 
 ---
 
@@ -1803,11 +1802,11 @@ The following table describes the options arguments:
 
 | Name | Required | Type | Description |
 |---|:-:|---|---|
-| edit_privilege | no | string | Indicates that the group has permission to edit privileges on the resource. |
-| share_privilege | no | string | Indicates that the group has permission to share the resource. |
+| editPrivilege | no | string | Indicates that the group has permission to edit privileges on the resource. |
+| sharePrivilege | no | string | Indicates that the group has permission to share the resource. |
 
-    share = ProfitBricks::Share.update(group_id,datacenter_id,{
-      edit_privilege: false
+    share = ProfitBricks::Share.update(group_id, resource_id, {
+      editPrivilege: false
     })
 
 ---
@@ -1821,7 +1820,7 @@ Removes a resource share from a group.
 | group_id | **yes** | string | The ID of the group. |
 | resource_id | **yes** | string | The ID of the resource. |
 
-    ProfitBricks::Share.delete(group_id,datacenter_id)
+    ProfitBricks::Share.delete(group_id, resource_id)
 
 ---
 
@@ -1878,7 +1877,7 @@ The following table describes the request arguments:
 | email | **yes**  | bool | An e-mail address for the user. |
 | password | **yes**  | bool | A password for the user. |
 | administrator | no | bool | Assigns the user have administrative rights. |
-| force_sec_auth | no | bool | Indicates if secure (two-factor) authentication should be forced for the user. |
+| forceSecAuth | no | bool | Indicates if secure (two-factor) authentication should be forced for the user. |
 
     user = {
             firstname: 'John',
@@ -1886,7 +1885,7 @@ The following table describes the request arguments:
             email: 'no-reply@example.com',
             password: 'secretpassword123',
             administrator: 'administrator',
-            force_sec_auth: false
+            forceSecAuth: false
           }
 
     response = ProfitBricks::User.create(user)
@@ -1906,15 +1905,15 @@ The following table describes the request arguments:
 | lastname | **yes**  | bool | A name for the user. |
 | email | **yes**  | bool | An e-mail address for the user. |
 | administrator | **yes** | bool | Assigns the user have administrative rights. |
-| force_sec_auth | **yes** | bool | Indicates if secure (two-factor) authentication should be forced for the user. |
+| forceSecAuth | **yes** | bool | Indicates if secure (two-factor) authentication should be forced for the user. |
 
     user = ProfitBricks::User.get(user_id)
-    response = user.update(
-    administrator: false,
-    firstname: 'John',
-    lastname: 'Doe',
-    email: 'no-reply@example.com',
-    force_sec_auth: false
+      response = user.update(
+      administrator: false,
+      firstname: 'John',
+      lastname: 'Doe',
+      email: 'no-reply@example.com',
+      forceSecAuth: false
     )
 
 ---

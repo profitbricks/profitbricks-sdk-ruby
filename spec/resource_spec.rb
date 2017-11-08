@@ -19,10 +19,9 @@ describe ProfitBricks::Resource do
   end
 
   after(:all) do
-    @snapshot.delete
-    @volume.delete
-    @ipblock.release
     @datacenter.delete
+    @ipblock.release
+    @snapshot.delete
   end
 
   it '#list' do

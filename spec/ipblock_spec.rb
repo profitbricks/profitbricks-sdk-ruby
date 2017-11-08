@@ -51,7 +51,9 @@ describe ProfitBricks::IPBlock do
 
   # alias: delete
   it '#release' do
-    ipblock = ProfitBricks::IPBlock.reserve(options[:ipblock])
+    opts = options[:ipblock]
+    opts[:size] = 1
+    ipblock = ProfitBricks::IPBlock.reserve(opts)
 
     expect(ipblock.release).to be_kind_of(Hash)
   end
